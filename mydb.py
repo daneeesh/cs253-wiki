@@ -13,8 +13,7 @@ def recentposts(update=False):
     recent_posts = memcache.get(key)
     if recent_posts is None or update:
         logging.debug("CACHE QUERY RECENTPOSTS")
-        recent_posts = db.GqlQuery("SELECT * FROM Post ORDER BY created DESC limit 10")
-        recent_posts = list(recent_posts)
+        recent_posts = allposts()[:10]
         memcache.set(key, recent_posts)
         memcache.set(age, time.time())
     return recent_posts
@@ -31,6 +30,7 @@ def allposts(update=False):
         all_posts = list(a)
         memcache.set(key, all_posts)
         memcache.set(key2, all_posts[:10])
+        memcache.set(age, time.time())
     return all_posts
 
 
@@ -72,7 +72,9 @@ def allusers(update=False):
 def single_user_by_name(name):
     all_users = allusers()
     try:
-        return [user.name for user in all_users if user.name == name][0]
+        for user in all_users:
+            if user.name == name:
+                return user
     except:
         return None
 
@@ -80,9 +82,28 @@ def single_user_by_name(name):
 def single_user_by_id(id):
     all_users = allusers()
     try:
-        return [user.name for user in all_users if user.key().id() == id][0]
+        for user in all_users:
+            if user.key().id() == id:
+                return user
     except:
         return None
+
+
+def initialize_memcache():
+    allposts(True)
+    allusers(True)
+
+
+def flush_memcache():
+    memcache.flush_all()
+
+
+def memcache_get(key):
+    return memcache.get(key)
+
+
+def memcache_set(key, value):
+    memcache.set(key, value)
 
 
 class User(db.Model):

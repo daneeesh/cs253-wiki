@@ -44,6 +44,7 @@ class SignupPage(Handler):
         psswrd = utils.valid_psswrd(user_psswrd)
         verified = utils.verify_psswrd(user_psswrd, user_ver)
         email = utils.valid_email(user_email)
+
         # this will store the values to be returned
         ret = {"uname":user_uname, "uname_err":"", "psswrd_err":"", "verify_err":"", "email":user_email, "email_err":""}
 
@@ -62,8 +63,9 @@ class SignupPage(Handler):
             self.render_signup(uname=ret["uname"], uname_err=ret["uname_err"], psswrd_err=ret["psswrd_err"], verify_err=ret["verify_err"], email=ret["email"], email_err=ret["email_err"])
         else:
             password_hash = utils.make_pw_hash(user_uname, user_psswrd)
-            user = User(username=user_uname, password_hash=password_hash, salt=password_hash.split('|')[1], email=user_email)
+            user = mydb.User(username=user_uname, password_hash=password_hash, salt=password_hash.split('|')[1], email=user_email)
             user.put()
+            mydb.allusers(True)
             self.response.headers.add_header('Set-Cookie', "user_id=%s" % utils.make_secure_val(str(user.key().id())))
             self.redirect('/welcome')
 
@@ -84,7 +86,7 @@ class WelcomePage(Handler):
 
 class LoginPage(Handler):
     def render_login(self, uname="", login_err=""):
-        self.render("login.html", style=css_style, uname=uname, login_err=login_err)
+        self.render("login.html", uname=uname, login_err=login_err)
 
     def get(self):
         self.render_login()
@@ -108,21 +110,24 @@ class LoginPage(Handler):
         else:
             self.render_login(uname=user_uname, login_err="Invalid username or password")
 
+
 class LogoutPage(Handler):
     def get(self):
         self.response.headers.add_header('Set-Cookie', "user_id=;Path=/")
         self.redirect('/signup')
 
+
 class MainPage(Handler):
     def render_front(self, title="", content="", error=""):
         posts = mydb.recentposts()
-        if memcache.get('age') is None:
-            memcache.set('age', time.time())
-        age = '%i' % (time.time() - memcache.get('age'))
+        if mydb.memcache_get('age') is None:
+            mydb.memcache_set('age', time.time())
+        age = '%i' % (time.time() - mydb.memcache_get('age'))
         self.render("front.html", title=title, age=age, content=content, error=error, posts=posts)
 
     def get(self):
         self.render_front()
+
 
 class NewPost(Handler):
     def render_newpost(self, title="", content="", error=""):
@@ -138,23 +143,25 @@ class NewPost(Handler):
         if title and content:
             a = mydb.Post(title = title, content = content)
             a.put()
-            allposts(True)
-            recentposts(True)
+            mydb.allposts(True)
+            #recentposts(True)
             id = a.key().id()
             self.redirect("/"+str(id))
         else:
             error = "we need a title and some content"
             self.render_newpost(title, content, error)
 
+
 class SinglePost(Handler):
     def render_post(self, entry_id, title="", content="", error=""):
-        post = individpost(int(entry_id))
-        age = '%i' % (time.time() - memcache.get('age_individ'))
+        post = mydb.individpost(int(entry_id))
+        age = '%i' % (time.time() - mydb.memcache_get('age_individ'))
 
-        self.render("individpost.html", style=css_style, age=age, entry=post)
+        self.render("individpost.html", age=age, entry=post)
 
     def get(self, entry_id):
         self.render_post(entry_id)
+
 
 class JSONHandler(webapp2.RequestHandler):
     def write(self, *a):
@@ -168,18 +175,19 @@ class JSONHandler(webapp2.RequestHandler):
 
 class SingleJSON(JSONHandler):
     def get(self, entry_id):
-
-        post = singlepost(int(entry_id))
+        post = mydb.singlepost(int(entry_id))
         json_entry = self.create_json_entry(post)
         self.write(json_entry)
 
+
 class MainJSON(JSONHandler):
     def get(self):
-        posts = allposts()
+        posts = mydb.allposts()
         post_list = [self.create_json_entry(post) for post in posts]
         self.write(post_list)
 
+
 class Flush(Handler):
     def get(self):
-        memcache.flush_all()
+        mydb.flush_memcache()
         self.redirect('/')

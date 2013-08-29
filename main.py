@@ -7,6 +7,8 @@ import utils
 
 PAGE_RE = r'(/(?:[a-zA-Z0-9_-]+/?)*)'
 
+mydb.initialize_memcache()
+
 class MainHandler(webapp2.RequestHandler):
     def get(self):
         self.response.write('Hello world!')
