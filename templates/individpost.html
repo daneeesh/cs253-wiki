@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ entry.title }}</title>
+</head>
+<style type="text/css"> {{ style }}</style>
+<body>
+
+    <h1>This is the best blog</h1>
+    <div class="post">
+        <div class="post-heading">
+            <div class="post-title">
+                {{entry.title}}
+            </div>
+            <div class="post-date">
+                {{ entry.created.strftime("%b %d, %Y") }}
+            </div>
+        </div>
+        <pre class="post-content">
+            {{entry.content}}
+        </pre>
+    </div>
+    <p>Queried {{age}} seconds ago.</p>
+</body>
+</html>
