@@ -10,9 +10,10 @@ import logging
 import time
 import utils
 import mydb
+import cgi
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape=True)
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape=False)
 
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
@@ -46,7 +47,7 @@ class SignupPage(Handler):
         email = utils.valid_email(user_email)
 
         # this will store the values to be returned
-        ret = {"uname":user_uname, "uname_err":"", "psswrd_err":"", "verify_err":"", "email":user_email, "email_err":""}
+        ret = {"uname":cgi.escape(user_uname), "uname_err":"", "psswrd_err":"", "verify_err":"", "email":cgi.escape(user_email), "email_err":""}
 
         if not uname:
             ret["uname_err"] = "That's not a valid username!"
@@ -55,11 +56,11 @@ class SignupPage(Handler):
         if not psswrd:
             ret["psswrd_err"] = "That wasn't a valid password"
         if not verified:
-            ret["verify_err"] = "Passwords did not match: %s %s %s" % (user_psswrd, user_ver, verified)
+            ret["verify_err"] = "Passwords did not match"
         if not email:
             ret["email_err"] = "That's not a valid email!"
 
-        if not(uname and not(uname_ex) and psswrd and verified and (email or user_email == "")):
+        if not(uname and not uname_ex and psswrd and verified and (email or user_email == "")):
             self.render_signup(uname=ret["uname"], uname_err=ret["uname_err"], psswrd_err=ret["psswrd_err"], verify_err=ret["verify_err"], email=ret["email"], email_err=ret["email_err"])
         else:
             password_hash = utils.make_pw_hash(user_uname, user_psswrd)
@@ -69,26 +70,16 @@ class SignupPage(Handler):
             self.response.headers.add_header('Set-Cookie', "user_id=%s" % utils.make_secure_val(str(user.key().id())))
             self.redirect('/welcome')
 
-class WelcomePage(Handler):
-    def render_welcome(self, user=""):
-        self.render("welcome.html", username=user)
-
-    def get(self):
-        user_id_cookie_val = self.request.cookies.get('user_id')
-        if user_id_cookie_val:
-            user_id_val = utils.check_secure_val(user_id_cookie_val)
-            if user_id_val:
-                uname = mydb.single_user_by_id(user_id_val)
-                self.render_welcome(uname)
-        else:
-            self.redirect('/signup')
 
 
 class LoginPage(Handler):
+    entry = ""
     def render_login(self, uname="", login_err=""):
         self.render("login.html", uname=uname, login_err=login_err)
 
-    def get(self):
+    def get(self, entry_id):
+        global entry
+        entry = entry_id
         self.render_login()
 
     def post(self):
@@ -99,70 +90,63 @@ class LoginPage(Handler):
         valid_user = False
 
         q = mydb.single_user_by_name(user_uname)
-        if q.count() != 0:
+        if not(q is None):
             valid_user = True
             user = q.fetch(1)[0]
             valid_pwd = utils.valid_pw(user_uname, user_psswrd, user.password_hash)
 
         if valid_pwd and valid_user:
-            self.response.headers.add_header('Set-Cookie', "user_id=%s" % utils.make_secure_val(str(user.key().id())))
-            self.redirect('/welcome')
+            self.response.headers.add_header('Set-Cookie', "user_id=%s;Path=/" % utils.make_secure_val(str(user.key().id())))
+            self.redirect('/'+entry)
         else:
-            self.render_login(uname=user_uname, login_err="Invalid username or password")
+            self.render_login(uname=cgi.escape(user_uname), login_err="Invalid username or password")
 
 
 class LogoutPage(Handler):
-    def get(self):
+    def get(self, entry_id):
         self.response.headers.add_header('Set-Cookie', "user_id=;Path=/")
-        self.redirect('/signup')
+        self.redirect('/'+entry_id)
 
 
-class MainPage(Handler):
-    def render_front(self, title="", content="", error=""):
-        posts = mydb.recentposts()
-        if mydb.memcache_get('age') is None:
-            mydb.memcache_set('age', time.time())
-        age = '%i' % (time.time() - mydb.memcache_get('age'))
-        self.render("front.html", title=title, age=age, content=content, error=error, posts=posts)
-
-    def get(self):
-        self.render_front()
-
-
-class NewPost(Handler):
-    def render_newpost(self, title="", content="", error=""):
-        self.render("newpost.html", title=title, content=content, error=error)
-
-    def get(self):
-        self.render_newpost()
-
-    def post(self):
-        title = self.request.get("subject")
-        content = self.request.get("content")
-
-        if title and content:
-            a = mydb.Post(title = title, content = content)
-            a.put()
-            mydb.allposts(True)
-            #recentposts(True)
-            id = a.key().id()
-            self.redirect("/"+str(id))
+class WikiPage(Handler):
+    def render_post(self, entry_id):
+        post = mydb.singlepost(entry_id)
+        if post:
+            age = '%i' % (time.time() - mydb.memcache_get('age_individ'))
+            self.render("individpost.html", age=age, entry=post)
         else:
-            error = "we need a title and some content"
-            self.render_newpost(title, content, error)
-
-
-class SinglePost(Handler):
-    def render_post(self, entry_id, title="", content="", error=""):
-        post = mydb.individpost(int(entry_id))
-        age = '%i' % (time.time() - mydb.memcache_get('age_individ'))
-
-        self.render("individpost.html", age=age, entry=post)
+            self.redirect("/_edit/"+entry_id)
 
     def get(self, entry_id):
         self.render_post(entry_id)
 
 
+class EditPage(Handler):
+    entry_title = ""
+    def render_edit(self, title="", content=""):
+        self.render("edit.html", title=title, content=content)
+
+    def get(self, entry_id):
+        post = mydb.singlepost(entry_id)
+        global entry_title
+        entry_title = entry_id
+        if post:
+            self.render_edit(post.title, post.content)
+        else:
+            self.render_edit()
+
+    def post(self, entry="", title=""):
+        entry = self.request.get("entry")
+        title = entry_title
+
+        post = mydb.Post(title=title, content=entry)
+        post.put()
+        mydb.allposts(True)
+        self.redirect("/"+title)
+
+
+
+#This should be useless but kept it here for now
 class JSONHandler(webapp2.RequestHandler):
     def write(self, *a):
         self.response.headers['Content-Type'] = 'application/json; charset=UTF-8'
@@ -191,3 +175,52 @@ class Flush(Handler):
     def get(self):
         mydb.flush_memcache()
         self.redirect('/')
+
+
+class WelcomePage(Handler):
+    def render_welcome(self, user=""):
+        self.render("welcome.html", username=user)
+
+    def get(self):
+        user_id_cookie_val = self.request.cookies.get('user_id')
+        if user_id_cookie_val:
+            user_id_val = utils.check_secure_val(user_id_cookie_val)
+            if user_id_val:
+                uname = mydb.single_user_by_id(user_id_val)
+                self.render_welcome(uname)
+        else:
+            self.redirect('/signup')
+
+
+class NewPost(Handler):
+    def render_newpost(self, title="", content="", error=""):
+        self.render("newpost.html", title=title, content=content, error=error)
+
+    def get(self):
+        self.render_newpost()
+
+    def post(self):
+        title = self.request.get("subject")
+        content = self.request.get("content")
+
+        if title and content:
+            a = mydb.Post(title = title, content = content)
+            a.put()
+            mydb.allposts(True)
+            id = a.key().id()
+            self.redirect("/"+str(id))
+        else:
+            error = "we need a title and some content"
+            self.render_newpost(title, content, error)
+
+
+class MainPage(Handler):
+    def render_front(self, title="", content="", error=""):
+        posts = mydb.recentposts()
+        if mydb.memcache_get('age') is None:
+            mydb.memcache_set('age', time.time())
+        age = '%i' % (time.time() - mydb.memcache_get('age'))
+        self.render("front.html", title=title, age=age, content=content, error=error, posts=posts)
+
+    def get(self):
+        self.render_front()

@@ -9,10 +9,6 @@ PAGE_RE = r'(/(?:[a-zA-Z0-9_-]+/?)*)'
 
 mydb.initialize_memcache()
 
-class MainHandler(webapp2.RequestHandler):
-    def get(self):
-        self.response.write('Hello world!')
-
 LoginHandler = handlers.LoginPage()
 LogoutHandler = handlers.LogoutPage()
 SignupHandler = handlers.SignupPage()
@@ -20,8 +16,7 @@ WikiHandler = handlers.WikiPage()
 EditHandler = handlers.EditPage()
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler),
-    ('/login',LoginHandler),
+    ('/login', LoginHandler),
     ('/logout', LogoutHandler),
     ('/signup', SignupHandler),
     (PAGE_RE, WikiHandler),

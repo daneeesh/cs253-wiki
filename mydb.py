@@ -36,13 +36,15 @@ def allposts(update=False):
 
 def singlepost(id):
     all_posts = allposts()
+    age = 'age_individ'
     for a in all_posts:
-        if a.key().id() == id:
+        if a.title == id:
             return a
-    return False
+        memcache.set(age, time.time())
+    return None
 
 
-def individpost(id, update=False):
+"""def individpost(id, update=False):
     key = 'individ'
     age = 'age_individ'
     individ_post = memcache.get(key)
@@ -55,7 +57,7 @@ def individpost(id, update=False):
         individ_post = singlepost(id)
         memcache.set(key, individ_post)
         memcache.set(age, time.time())
-    return individ_post
+    return individ_post"""
 
 
 def allusers(update=False):

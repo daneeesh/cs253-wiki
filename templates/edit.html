@@ -6,7 +6,6 @@
 </head>
 <body>
     <div class="login-area">
-        <a class="login-link" href="/_edit/{{entry.title}}">edit</a>|
         {{% if logged_in %}}
             <a class="login-link">{{user}}</a>
             <a class="login-link" href="/logout">(logout)</a>
@@ -15,9 +14,11 @@
         {{% endif %}}
 
     </div>
-    <div class="post">
-        {{ entry.content }}
-    </div>
-    <p>Queried {{age}} seconds ago.</p>
+    <form method="post">
+        <div class="textarea">
+            <textarea name="content">{{content}}</textarea>
+        </div>
+        <input type="submit" value="Save"/>
+    </form>
 </body>
 </html>
