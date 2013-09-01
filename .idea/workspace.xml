@@ -2,20 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/edit.html" afterPath="$PROJECT_DIR$/templates/edit.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handlers.py" afterPath="$PROJECT_DIR$/handlers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/individpost.html" afterPath="$PROJECT_DIR$/templates/individpost.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mydb.py" afterPath="$PROJECT_DIR$/mydb.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utils.py" afterPath="$PROJECT_DIR$/utils.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="wiki.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/main.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1377879658867" ignored="false" />
     <file path="/mydb.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378066085178" ignored="false" />
-    <file path="/handlers.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378066829084" ignored="false" />
+    <file path="/handlers.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378067508303" ignored="false" />
     <file path="/utils.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378067034450" ignored="false" />
-    <file path="/Dummy.txt" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378056650127" ignored="false" />
+    <file path="/Dummy.txt" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378067299329" ignored="false" />
     <file path="/login.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1377809129138" ignored="false" />
     <file path="/individpost.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1377876831221" ignored="false" />
     <file path="/edit.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1377865959533" ignored="false" />
@@ -60,10 +56,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="utils.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="utils.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="63" selection-start="212" selection-end="212" vertical-scroll-proportion="0.1294964">
+            <state line="11" column="63" selection-start="212" selection-end="212" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="e#23#48#0" expanded="true" />
               </folding>
@@ -71,10 +67,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="handlers.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="handlers.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/handlers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="29" column="26" selection-start="807" selection-end="807" vertical-scroll-proportion="0.0">
+            <state line="136" column="68" selection-start="5180" selection-end="5180" vertical-scroll-proportion="0.4941349">
               <folding>
                 <element signature="e#23#32#0" expanded="true" />
               </folding>
@@ -153,8 +149,8 @@
         <option value="$PROJECT_DIR$/templates/individpost.html" />
         <option value="$PROJECT_DIR$/templates/edit.html" />
         <option value="$PROJECT_DIR$/mydb.py" />
-        <option value="$PROJECT_DIR$/handlers.py" />
         <option value="$PROJECT_DIR$/utils.py" />
+        <option value="$PROJECT_DIR$/handlers.py" />
       </list>
     </option>
   </component>
@@ -385,7 +381,11 @@
       <created>1378056656060</created>
       <updated>1378056656060</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="fixed some issues with cookies and redirection caused by random regenerating the secret every time">
+      <created>1378067394744</created>
+      <updated>1378067394745</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -454,7 +454,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="redirection after logging in, signing up, and logging out works fine" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed some issues with cookies and redirection caused by random regenerating the secret every time" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -472,6 +472,7 @@
     <MESSAGE value="A lot of refactoring and editing later..." />
     <MESSAGE value="Implemented most of the required functionalities. Need to add tracking of recently visited page for redirect after login" />
     <MESSAGE value="redirection after logging in, signing up, and logging out works fine" />
+    <MESSAGE value="fixed some issues with cookies and redirection caused by random regenerating the secret every time" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -560,20 +561,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/handlers.py">
+    <entry file="file://$PROJECT_DIR$/utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="26" selection-start="807" selection-end="807" vertical-scroll-proportion="0.0">
+        <state line="11" column="63" selection-start="212" selection-end="212" vertical-scroll-proportion="0.0">
           <folding>
-            <element signature="e#23#32#0" expanded="true" />
+            <element signature="e#23#48#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils.py">
+    <entry file="file://$PROJECT_DIR$/handlers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="63" selection-start="212" selection-end="212" vertical-scroll-proportion="0.1294964">
+        <state line="136" column="68" selection-start="5180" selection-end="5180" vertical-scroll-proportion="0.4941349">
           <folding>
-            <element signature="e#23#48#0" expanded="true" />
+            <element signature="e#23#32#0" expanded="true" />
           </folding>
         </state>
       </provider>

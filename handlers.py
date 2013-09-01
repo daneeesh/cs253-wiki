@@ -131,7 +131,10 @@ class WikiPage(Handler):
             uname, logged_in = self.signedin()
             self.response.set_cookie('last_post', entry_id)
             age = '%i' % (time.time() - mydb.memcache_get('age_individ'))
-            self.render("individpost.html", age=age, entry=post, user=uname.username, logged_in=logged_in)
+            if logged_in:
+                self.render("individpost.html", age=age, entry=post, user=uname.username, logged_in=logged_in)
+            else:
+                self.render("individpost.html", age=age, entry=post, logged_in=logged_in)
         else:
             logging.error("NO POST, redirect to /_edit%s" % entry_id)
             mydb.allposts(True)
