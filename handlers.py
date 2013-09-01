@@ -74,8 +74,12 @@ class SignupPage(Handler):
             user = mydb.User(username=user_uname, password_hash=password_hash, salt=password_hash.split('|')[1], email=user_email)
             user.put()
             mydb.allusers(True)
-            self.response.headers.add_header('Set-Cookie', "user_id=%s;Path=/" % utils.make_secure_val(str(user.key().id())))
-            self.redirect('/')
+            try:
+                redir = self.request.cookies.get('last_post')
+            except:
+                redir = '/'
+            self.response.headers.add_header('Set-Cookie', "user_id=%s;last_post=%s;Path=/" % (utils.make_secure_val(str(user.key().id())), str(redir)))
+            self.redirect(str(redir))
 
 
 
@@ -102,22 +106,28 @@ class LoginPage(Handler):
             valid_pwd = utils.valid_pw(user_uname, user_psswrd, q.password_hash)
 
         if valid_pwd and valid_user:
-            self.response.headers.add_header('Set-Cookie', "user_id=%s;Path=/" % utils.make_secure_val(str(q.key().id())))
-            self.redirect('/')
+            try:
+                redir = self.request.cookies.get('last_post')
+            except:
+                redir = '/'
+            self.response.headers.add_header('Set-Cookie', "user_id=%s;last_post=%s;Path=/" % (utils.make_secure_val(str(q.key().id())), str(redir)))
+            self.redirect(str(redir))
         else:
             self.render_login(uname=cgi.escape(user_uname), login_err="Invalid username or password")
 
 
 class LogoutPage(Handler):
     def get(self):
-        self.response.headers.add_header('Set-Cookie', "user_id=;Path=/")
-        self.redirect('/')
+        redir = self.request.cookies.get('last_post')
+        self.response.set_cookie('user_id', '')
+        self.redirect(str(redir))
 
 
 class WikiPage(Handler):
     def render_post(self, entry_id):
         post = mydb.singlepost(entry_id)
         if post:
+            self.response.set_cookie('last_post', entry_id)
             age = '%i' % (time.time() - mydb.memcache_get('age_individ'))
             self.render("individpost.html", age=age, entry=post)
         else:
@@ -126,7 +136,7 @@ class WikiPage(Handler):
             self.redirect("/_edit"+entry_id)
 
     def get(self, entry_id):
-        uname, loggedin = self.signedin()
+        uname, logged_in = self.signedin()
         self.render_post(entry_id)
 
 
@@ -135,8 +145,9 @@ class EditPage(Handler):
         self.render("edit.html", title=title, content=content)
 
     def get(self, entry_id):
-        uname, loggedin = self.signedin()
+        uname, logged_in = self.signedin()
         post = mydb.singlepost(entry_id)
+        self.response.set_cookie('last_post', '/_edit'+entry_id)
         logging.error("entry id: " + entry_id)
         if post:
             logging.error("THERE is a post")
