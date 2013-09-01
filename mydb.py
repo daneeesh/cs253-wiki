@@ -12,7 +12,7 @@ def recentposts(update=False):
     age = 'age_recent'
     recent_posts = memcache.get(key)
     if recent_posts is None or update:
-        logging.debug("CACHE QUERY RECENTPOSTS")
+        logging.error("CACHE QUERY RECENTPOSTS")
         recent_posts = allposts()[:10]
         memcache.set(key, recent_posts)
         memcache.set(age, time.time())
@@ -25,7 +25,7 @@ def allposts(update=False):
     age = 'age_recent'
     all_posts = memcache.get(key)
     if all_posts is None or update:
-        logging.debug("DB QUERY ALLPOSTS")
+        logging.error("DB QUERY ALLPOSTS")
         a = db.GqlQuery("SELECT * FROM Post ORDER BY created")
         all_posts = list(a)
         memcache.set(key, all_posts)
@@ -37,10 +37,11 @@ def allposts(update=False):
 def singlepost(id):
     all_posts = allposts()
     age = 'age_individ'
+    key = 'individ'
     for a in all_posts:
         if a.title == id:
+            memcache.set(age, time.time())
             return a
-        memcache.set(age, time.time())
     return None
 
 
@@ -64,7 +65,7 @@ def allusers(update=False):
     key = 'users'
     all_users = memcache.get(key)
     if all_users is None or update:
-        logging.debug("DB QUERY ALLUSERS")
+        logging.error("DB QUERY ALLUSERS")
         a = db.GqlQuery("SELECT * FROM User ORDER BY created")
         all_users = list(a)
         memcache.set(key, all_users)
@@ -73,12 +74,10 @@ def allusers(update=False):
 
 def single_user_by_name(name):
     all_users = allusers()
-    try:
-        for user in all_users:
-            if user.name == name:
-                return user
-    except:
-        return None
+    for user in all_users:
+        if user.username == name:
+            return user
+    return None
 
 
 def single_user_by_id(id):

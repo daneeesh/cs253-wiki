@@ -1,13 +1,8 @@
 #!/usr/bin/env python
 
-import os, re, random, string
-import webapp2
-import jinja2
+import re, random, string
 import hashlib
 import hmac
-import json
-import logging
-import time
 import mydb
 
 
@@ -66,5 +61,5 @@ def verify_psswrd(orig, rep):
 
 
 def user_exists(uname):
-    q = mydb.single_user(uname)
+    q = mydb.single_user_by_name(uname)
     return not(q is None)

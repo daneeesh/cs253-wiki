@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 
-import os, re, random, string
+import os
 import webapp2
 import jinja2
-import hashlib
-import hmac
 import json
-import logging
 import time
 import utils
 import mydb
 import cgi
+import logging
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape=False)
@@ -25,6 +23,15 @@ class Handler(webapp2.RequestHandler):
 
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
+
+    def signedin(self):
+        user_id_cookie_val = self.request.cookies.get('user_id')
+        if user_id_cookie_val:
+            user_id_val = utils.check_secure_val(user_id_cookie_val)
+            if user_id_val:
+                uname = mydb.single_user_by_id(user_id_val)
+                return uname, True
+        return None, False
 
 
 class SignupPage(Handler):
@@ -67,45 +74,44 @@ class SignupPage(Handler):
             user = mydb.User(username=user_uname, password_hash=password_hash, salt=password_hash.split('|')[1], email=user_email)
             user.put()
             mydb.allusers(True)
-            self.response.headers.add_header('Set-Cookie', "user_id=%s" % utils.make_secure_val(str(user.key().id())))
-            self.redirect('/welcome')
+            self.response.headers.add_header('Set-Cookie', "user_id=%s;Path=/" % utils.make_secure_val(str(user.key().id())))
+            self.redirect('/')
 
 
 
 class LoginPage(Handler):
-    entry = ""
     def render_login(self, uname="", login_err=""):
         self.render("login.html", uname=uname, login_err=login_err)
 
-    def get(self, entry_id):
-        global entry
-        entry = entry_id
+    def get(self):
         self.render_login()
 
     def post(self):
         user_uname = self.request.get('username')
         user_psswrd = self.request.get('password')
 
+        print user_uname
+
         valid_pwd = False
         valid_user = False
 
         q = mydb.single_user_by_name(user_uname)
+        print q
         if not(q is None):
             valid_user = True
-            user = q.fetch(1)[0]
-            valid_pwd = utils.valid_pw(user_uname, user_psswrd, user.password_hash)
+            valid_pwd = utils.valid_pw(user_uname, user_psswrd, q.password_hash)
 
         if valid_pwd and valid_user:
-            self.response.headers.add_header('Set-Cookie', "user_id=%s;Path=/" % utils.make_secure_val(str(user.key().id())))
-            self.redirect('/'+entry)
+            self.response.headers.add_header('Set-Cookie', "user_id=%s;Path=/" % utils.make_secure_val(str(q.key().id())))
+            self.redirect('/')
         else:
             self.render_login(uname=cgi.escape(user_uname), login_err="Invalid username or password")
 
 
 class LogoutPage(Handler):
-    def get(self, entry_id):
+    def get(self):
         self.response.headers.add_header('Set-Cookie', "user_id=;Path=/")
-        self.redirect('/'+entry_id)
+        self.redirect('/')
 
 
 class WikiPage(Handler):
@@ -115,34 +121,38 @@ class WikiPage(Handler):
             age = '%i' % (time.time() - mydb.memcache_get('age_individ'))
             self.render("individpost.html", age=age, entry=post)
         else:
-            self.redirect("/_edit/"+entry_id)
+            logging.error("NO POST, redirect to /_edit%s" % entry_id)
+            mydb.allposts(True)
+            self.redirect("/_edit"+entry_id)
 
     def get(self, entry_id):
+        uname, loggedin = self.signedin()
         self.render_post(entry_id)
 
 
 class EditPage(Handler):
-    entry_title = ""
-    def render_edit(self, title="", content=""):
+    def render_edit(self, title="", content="", logged_in=False):
         self.render("edit.html", title=title, content=content)
 
     def get(self, entry_id):
+        uname, loggedin = self.signedin()
         post = mydb.singlepost(entry_id)
-        global entry_title
-        entry_title = entry_id
+        logging.error("entry id: " + entry_id)
         if post:
+            logging.error("THERE is a post")
             self.render_edit(post.title, post.content)
         else:
-            self.render_edit()
+            logging.error("NO POST, render %s" % entry_id)
+            self.render_edit(title=entry_id)
 
-    def post(self, entry="", title=""):
-        entry = self.request.get("entry")
-        title = entry_title
-
-        post = mydb.Post(title=title, content=entry)
-        post.put()
+    def post(self, entry_id):
+        entry = self.request.get("content")
+        title = entry_id
+        logging.error("this is the entry_title: " + title)
+        p = mydb.Post(title=title, content=entry)
+        p.put()
         mydb.allposts(True)
-        self.redirect("/"+title)
+        self.redirect('/..'+title)
 
 
 

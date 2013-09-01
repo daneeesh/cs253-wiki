@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ entry.title }}</title>
-    <link type="text/css" rel="stylesheet" href="style/main.css" />
+    <title>Edit {{title}}</title>
+    <link type="text/css" rel="stylesheet" href="/style/main.css" />
 </head>
 <body>
     <div class="login-area">
-        {{% if logged_in %}}
+        {% if logged_in %}
             <a class="login-link">{{user}}</a>
             <a class="login-link" href="/logout">(logout)</a>
-        {{% else %}}
+        {% else %}
             <a class="login-link" href="/login">login</a>
-        {{% endif %}}
+        {% endif %}
 
     </div>
     <form method="post">
