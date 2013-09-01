@@ -9,9 +9,9 @@
     <ignored path=".idea/workspace.xml" />
     <file path="/main.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1377879658867" ignored="false" />
     <file path="/mydb.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378066085178" ignored="false" />
-    <file path="/handlers.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378067508303" ignored="false" />
+    <file path="/handlers.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378069447192" ignored="false" />
     <file path="/utils.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378067034450" ignored="false" />
-    <file path="/Dummy.txt" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378067299329" ignored="false" />
+    <file path="/Dummy.txt" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378067878872" ignored="false" />
     <file path="/login.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1377809129138" ignored="false" />
     <file path="/individpost.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1377876831221" ignored="false" />
     <file path="/edit.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1377865959533" ignored="false" />
@@ -70,7 +70,7 @@
       <file leaf-file-name="handlers.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/handlers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="136" column="68" selection-start="5180" selection-end="5180" vertical-scroll-proportion="0.4941349">
+            <state line="173" column="18" selection-start="6567" selection-end="6567" vertical-scroll-proportion="1.9897361">
               <folding>
                 <element signature="e#23#32#0" expanded="true" />
               </folding>
@@ -385,7 +385,11 @@
       <created>1378067394744</created>
       <updated>1378067394745</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="last redirect-after-changing-login-status-bug fixed">
+      <created>1378067891654</created>
+      <updated>1378067891655</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -454,7 +458,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed some issues with cookies and redirection caused by random regenerating the secret every time" />
+    <option name="LAST_COMMIT_MESSAGE" value="last redirect-after-changing-login-status-bug fixed" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -473,6 +477,7 @@
     <MESSAGE value="Implemented most of the required functionalities. Need to add tracking of recently visited page for redirect after login" />
     <MESSAGE value="redirection after logging in, signing up, and logging out works fine" />
     <MESSAGE value="fixed some issues with cookies and redirection caused by random regenerating the secret every time" />
+    <MESSAGE value="last redirect-after-changing-login-status-bug fixed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -572,7 +577,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/handlers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="136" column="68" selection-start="5180" selection-end="5180" vertical-scroll-proportion="0.4941349">
+        <state line="173" column="18" selection-start="6567" selection-end="6567" vertical-scroll-proportion="1.9897361">
           <folding>
             <element signature="e#23#32#0" expanded="true" />
           </folding>

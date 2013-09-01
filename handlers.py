@@ -168,7 +168,8 @@ class EditPage(Handler):
         entry = self.request.get("content")
         title = entry_id
         logging.error("this is the entry_title: " + title)
-        p = mydb.Post(title=title, content=entry)
+        p = mydb.singlepost(entry_id)
+        p.content = entry
         p.put()
         mydb.allposts(True)
         self.redirect('/..'+title)
