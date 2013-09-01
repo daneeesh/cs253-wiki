@@ -31,6 +31,7 @@ def allposts(update=False):
         memcache.set(key, all_posts)
         memcache.set(key2, all_posts[:10])
         memcache.set(age, time.time())
+        print "finished updating all the posts"
     return all_posts
 
 
@@ -69,25 +70,30 @@ def allusers(update=False):
         a = db.GqlQuery("SELECT * FROM User ORDER BY created")
         all_users = list(a)
         memcache.set(key, all_users)
+        print "finished refreshing all the users"
     return all_users
 
 
 def single_user_by_name(name):
     all_users = allusers()
+    print [user.username for user in all_users]
+    print name
     for user in all_users:
-        if user.username == name:
+        if str(user.username) == str(name):
+            print user.username
             return user
     return None
 
 
 def single_user_by_id(id):
     all_users = allusers()
-    try:
-        for user in all_users:
-            if user.key().id() == id:
-                return user
-    except:
-        return None
+    print [user.key().id() for user in all_users]
+    print id
+    for user in all_users:
+        if int(user.key().id()) == int(id):
+            print user.username
+            return user
+    return None
 
 
 def initialize_memcache():

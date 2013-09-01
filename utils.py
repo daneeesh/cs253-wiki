@@ -9,7 +9,7 @@ import mydb
 def hash_str(s):
     return hashlib.sha256(s).hexdigest()
 
-secret = "".join(random.sample(string.letters, 50))
+secret = 'MvzGTrleqoBLnwyXgCmQUbAcOpVDRNYFhxWPifksSIJtujZadE' #"".join(random.sample(string.letters, 50))
 
 
 def make_secure_val(s):

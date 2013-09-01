@@ -26,8 +26,10 @@ class Handler(webapp2.RequestHandler):
 
     def signedin(self):
         user_id_cookie_val = self.request.cookies.get('user_id')
+        print "user_id_cookie_val: %s" % user_id_cookie_val
         if user_id_cookie_val:
             user_id_val = utils.check_secure_val(user_id_cookie_val)
+            print "user_id_val: %s" % user_id_val
             if user_id_val:
                 uname = mydb.single_user_by_id(user_id_val)
                 return uname, True
@@ -73,10 +75,10 @@ class SignupPage(Handler):
             password_hash = utils.make_pw_hash(user_uname, user_psswrd)
             user = mydb.User(username=user_uname, password_hash=password_hash, salt=password_hash.split('|')[1], email=user_email)
             user.put()
+            print "added new user %s" % user.username
             mydb.allusers(True)
-            try:
-                redir = self.request.cookies.get('last_post')
-            except:
+            redir = self.request.cookies.get('last_post')
+            if not redir:
                 redir = '/'
             self.response.headers.add_header('Set-Cookie', "user_id=%s;last_post=%s;Path=/" % (utils.make_secure_val(str(user.key().id())), str(redir)))
             self.redirect(str(redir))
@@ -106,9 +108,8 @@ class LoginPage(Handler):
             valid_pwd = utils.valid_pw(user_uname, user_psswrd, q.password_hash)
 
         if valid_pwd and valid_user:
-            try:
-                redir = self.request.cookies.get('last_post')
-            except:
+            redir = self.request.cookies.get('last_post')
+            if not redir:
                 redir = '/'
             self.response.headers.add_header('Set-Cookie', "user_id=%s;last_post=%s;Path=/" % (utils.make_secure_val(str(q.key().id())), str(redir)))
             self.redirect(str(redir))
@@ -127,34 +128,38 @@ class WikiPage(Handler):
     def render_post(self, entry_id):
         post = mydb.singlepost(entry_id)
         if post:
+            uname, logged_in = self.signedin()
             self.response.set_cookie('last_post', entry_id)
             age = '%i' % (time.time() - mydb.memcache_get('age_individ'))
-            self.render("individpost.html", age=age, entry=post)
+            self.render("individpost.html", age=age, entry=post, user=uname.username, logged_in=logged_in)
         else:
             logging.error("NO POST, redirect to /_edit%s" % entry_id)
             mydb.allposts(True)
             self.redirect("/_edit"+entry_id)
 
     def get(self, entry_id):
-        uname, logged_in = self.signedin()
         self.render_post(entry_id)
 
 
 class EditPage(Handler):
-    def render_edit(self, title="", content="", logged_in=False):
-        self.render("edit.html", title=title, content=content)
+    def render_edit(self, title="", content="", logged_in=False, user=""):
+        self.render("edit.html", title=title, content=content, logged_in=logged_in, user=user)
 
     def get(self, entry_id):
         uname, logged_in = self.signedin()
-        post = mydb.singlepost(entry_id)
-        self.response.set_cookie('last_post', '/_edit'+entry_id)
-        logging.error("entry id: " + entry_id)
-        if post:
-            logging.error("THERE is a post")
-            self.render_edit(post.title, post.content)
+        print uname
+        if logged_in:
+            post = mydb.singlepost(entry_id)
+            self.response.set_cookie('last_post', '/_edit'+entry_id)
+            logging.debug("entry id for editing: " + entry_id)
+            if post:
+                logging.error("THERE is a post")
+                self.render_edit(post.title, post.content, logged_in=logged_in, user=uname.username)
+            else:
+                logging.error("NO POST, render %s" % entry_id)
+                self.render_edit(title=entry_id, logged_in=logged_in, user=uname.username)
         else:
-            logging.error("NO POST, render %s" % entry_id)
-            self.render_edit(title=entry_id)
+            self.redirect('/login')
 
     def post(self, entry_id):
         entry = self.request.get("content")

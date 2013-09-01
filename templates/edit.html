@@ -8,7 +8,7 @@
     <div class="login-area">
         {% if logged_in %}
             <a class="login-link">{{user}}</a>
-            <a class="login-link" href="/logout">(logout)</a>
+             (<a class="login-link" href="/logout">logout</a>)
         {% else %}
             <a class="login-link" href="/login">login</a>
         {% endif %}
