@@ -13,12 +13,13 @@
              (<a class="login-link" href="/logout">logout</a>)
         {% else %}
             <a class="login-link" href="/login">login</a>
+            |
+            <a class="login-link" href="/signup">sign up</a>
         {% endif %}
 
     </div>
     <div class="post">
         {{ entry.content }}
     </div>
-    <p>Queried {{age}} seconds ago.</p>
 </body>
 </html>

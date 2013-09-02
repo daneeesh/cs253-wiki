@@ -2,21 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.yaml" afterPath="$PROJECT_DIR$/app.yaml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/edit.html" afterPath="$PROJECT_DIR$/templates/edit.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handlers.py" afterPath="$PROJECT_DIR$/handlers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/individpost.html" afterPath="$PROJECT_DIR$/templates/individpost.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mydb.py" afterPath="$PROJECT_DIR$/mydb.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="wiki.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/main.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378117588940" ignored="false" />
-    <file path="/mydb.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378118402392" ignored="false" />
-    <file path="/handlers.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378118270362" ignored="false" />
+    <file path="/mydb.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378138082442" ignored="false" />
+    <file path="/handlers.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378131256487" ignored="false" />
     <file path="/utils.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378067034450" ignored="false" />
-    <file path="/Dummy.txt" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378071701618" ignored="false" />
+    <file path="/Dummy.txt" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378118852023" ignored="false" />
     <file path="/login.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1377809129138" ignored="false" />
-    <file path="/individpost.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1377876831221" ignored="false" />
+    <file path="/individpost.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378119477983" ignored="false" />
     <file path="/edit.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1377865959533" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,7 +40,7 @@
       <file leaf-file-name="mydb.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mydb.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="85" column="26" selection-start="2399" selection-end="2399" vertical-scroll-proportion="0.7194245">
+            <state line="49" column="20" selection-start="1419" selection-end="1419" vertical-scroll-proportion="0.4532374">
               <folding>
                 <element signature="e#23#37#0" expanded="true" />
               </folding>
@@ -73,7 +73,7 @@
       <file leaf-file-name="handlers.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/handlers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="85" column="18" selection-start="3470" selection-end="3470" vertical-scroll-proportion="0.0">
+            <state line="159" column="7" selection-start="5915" selection-end="5915" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="e#23#32#0" expanded="true" />
               </folding>
@@ -84,7 +84,7 @@
       <file leaf-file-name="edit.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/edit.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="62" selection-start="313" selection-end="313" vertical-scroll-proportion="-6.521739">
+            <state line="20" column="28" selection-start="582" selection-end="582" vertical-scroll-proportion="-13.043478">
               <folding />
             </state>
           </provider>
@@ -102,7 +102,7 @@
       <file leaf-file-name="individpost.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/individpost.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="12" selection-start="352" selection-end="402" vertical-scroll-proportion="-7.826087">
+            <state line="22" column="10" selection-start="648" selection-end="648" vertical-scroll-proportion="-14.347826">
               <folding />
             </state>
           </provider>
@@ -148,18 +148,18 @@
         <option value="$PROJECT_DIR$/templates/login.html" />
         <option value="$PROJECT_DIR$/templates/style/main.css" />
         <option value="$PROJECT_DIR$/templates/signup.html" />
-        <option value="$PROJECT_DIR$/templates/individpost.html" />
-        <option value="$PROJECT_DIR$/templates/edit.html" />
         <option value="$PROJECT_DIR$/utils.py" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/templates/edit.html" />
+        <option value="$PROJECT_DIR$/templates/individpost.html" />
         <option value="$PROJECT_DIR$/handlers.py" />
         <option value="$PROJECT_DIR$/mydb.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="78" />
-    <option name="y" value="22" />
+    <option name="x" value="18" />
+    <option name="y" value="28" />
     <option name="width" value="1382" />
     <option name="height" value="866" />
   </component>
@@ -396,11 +396,15 @@
       <created>1378110431977</created>
       <updated>1378110431977</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="fixed an issue with the database not updating fast enough and propagating these changes to memcache when queried soon after the addition of a new user at signup.">
+      <created>1378118856927</created>
+      <updated>1378118856927</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="78" y="22" width="1382" height="866" extended-state="0" />
+    <frame x="18" y="28" width="1382" height="866" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -465,7 +469,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed bug: entries are updated instead of stored multiple times" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed an issue with the database not updating fast enough and propagating these changes to memcache when queried soon after the addition of a new user at signup." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -486,6 +490,7 @@
     <MESSAGE value="fixed some issues with cookies and redirection caused by random regenerating the secret every time" />
     <MESSAGE value="last redirect-after-changing-login-status-bug fixed" />
     <MESSAGE value="fixed bug: entries are updated instead of stored multiple times" />
+    <MESSAGE value="fixed an issue with the database not updating fast enough and propagating these changes to memcache when queried soon after the addition of a new user at signup." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -542,20 +547,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/individpost.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="12" selection-start="352" selection-end="402" vertical-scroll-proportion="-7.826087">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/edit.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="62" selection-start="313" selection-end="313" vertical-scroll-proportion="-6.521739">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="11" column="63" selection-start="212" selection-end="212" vertical-scroll-proportion="0.0">
@@ -574,9 +565,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/templates/edit.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="28" selection-start="582" selection-end="582" vertical-scroll-proportion="-13.043478">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/individpost.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="10" selection-start="648" selection-end="648" vertical-scroll-proportion="-14.347826">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/handlers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="85" column="18" selection-start="3470" selection-end="3470" vertical-scroll-proportion="0.0">
+        <state line="159" column="7" selection-start="5915" selection-end="5915" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="e#23#32#0" expanded="true" />
           </folding>
@@ -585,7 +590,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mydb.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="85" column="26" selection-start="2399" selection-end="2399" vertical-scroll-proportion="0.7194245">
+        <state line="49" column="20" selection-start="1419" selection-end="1419" vertical-scroll-proportion="0.4532374">
           <folding>
             <element signature="e#23#37#0" expanded="true" />
           </folding>

@@ -78,11 +78,11 @@ class SignupPage(Handler):
             user.put()
             print "added new user %s" % user.username
             mydb.allusers(True, user)
-            redir = self.request.cookies.get('last_post')
+            redir = self.request.cookies.get('Location')
             #time.sleep(1)
             if not redir:
                 redir = '/'
-            self.response.headers.add_header('Set-Cookie', "user_id=%s;last_post=%s;Path=/" % (utils.make_secure_val(str(user.key().id())), str(redir)))
+            self.response.headers.add_header('Set-Cookie', "user_id=%s;Location=%s;Path=/" % (utils.make_secure_val(str(user.key().id())), str(redir)))
             print redir
             self.redirect(str(redir))
 
@@ -111,10 +111,10 @@ class LoginPage(Handler):
             valid_pwd = utils.valid_pw(user_uname, user_psswrd, q.password_hash)
 
         if valid_pwd and valid_user:
-            redir = self.request.cookies.get('last_post')
+            redir = self.request.cookies.get('Location')
             if not redir:
                 redir = '/'
-            self.response.headers.add_header('Set-Cookie', "user_id=%s;last_post=%s;Path=/" % (utils.make_secure_val(str(q.key().id())), str(redir)))
+            self.response.headers.add_header('Set-Cookie', "user_id=%s;Location=%s;Path=/" % (utils.make_secure_val(str(q.key().id())), str(redir)))
             self.redirect(str(redir))
         else:
             self.render_login(uname=cgi.escape(user_uname), login_err="Invalid username or password")
@@ -122,7 +122,7 @@ class LoginPage(Handler):
 
 class LogoutPage(Handler):
     def get(self):
-        redir = self.request.cookies.get('last_post')
+        redir = self.request.cookies.get('Location')
         self.response.set_cookie('user_id', '')
         self.redirect(str(redir))
 
@@ -132,15 +132,14 @@ class WikiPage(Handler):
         post = mydb.singlepost(entry_id)
         if post:
             uname, logged_in = self.signedin()
-            self.response.set_cookie('last_post', entry_id)
-            age = '%i' % (time.time() - mydb.memcache_get('age_individ'))
+            self.response.set_cookie('Location', entry_id)
             if logged_in:
-                self.render("individpost.html", age=age, entry=post, user=uname.username, logged_in=logged_in)
+                self.render("individpost.html", entry=post, user=uname.username, logged_in=logged_in)
             else:
-                self.render("individpost.html", age=age, entry=post, logged_in=logged_in)
+                self.render("individpost.html", entry=post, logged_in=logged_in)
         else:
             logging.error("NO POST, redirect to /_edit%s" % entry_id)
-            mydb.allposts(True)
+            #mydb.allposts(True)
             self.redirect("/_edit"+entry_id)
 
     def get(self, entry_id):
@@ -154,9 +153,10 @@ class EditPage(Handler):
     def get(self, entry_id):
         uname, logged_in = self.signedin()
         print uname
+        post = mydb.singlepost(entry_id)
+        print "edit get entry key: " + str(post.key())
         if logged_in:
-            post = mydb.singlepost(entry_id)
-            self.response.set_cookie('last_post', '/_edit'+entry_id)
+            self.response.set_cookie('Location', '/_edit'+entry_id)
             logging.debug("entry id for editing: " + entry_id)
             if post:
                 logging.error("THERE is a post")
@@ -165,19 +165,36 @@ class EditPage(Handler):
                 logging.error("NO POST, render for edit: %s" % entry_id)
                 self.render_edit(title=entry_id, logged_in=logged_in, user=uname.username)
         else:
-            self.redirect('/login')
+            if post is None:
+                p = mydb.Post(title=entry_id, content=" ")
+                p.put()
+                mydb.allposts(True, p)
+            self.redirect('/..' + entry_id)
 
     def post(self, entry_id):
-        entry = self.request.get("content")
-        title = entry_id
-        logging.error("this is the entry_title: " + title)
+        uname, logged_in = self.signedin()
+        print entry_id
         p = mydb.singlepost(entry_id)
-        if p is None:
-            p = mydb.Post(title=title)
-        p.content = entry
-        p.put()
-        mydb.allposts(True)
-        self.redirect('/..'+title)
+        "edit post entry key: " + str(p.key())
+        if logged_in:
+            entry = self.request.get("content")
+            print entry
+            logging.error("this is the entry_title: " + entry_id)
+            print "p is none: " + str(p is None)
+            if p is None:
+                p = mydb.Post(title=entry_id, content=entry)
+            p.content = entry
+            print "edit post entry key after changing content: " + str(p.key())
+            print "updated content: " + str(p.content)
+            p.put()
+            print "edit post entry key after put: " + str(p.key())
+            mydb.allposts(True, p)
+        else:
+            if p is None:
+                p = mydb.Post(title=entry_id, content=" ")
+                p.put()
+                mydb.allposts(True, p)
+        self.redirect('/..'+entry_id)
 
 
 

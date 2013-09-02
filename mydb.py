@@ -12,24 +12,31 @@ def recentposts(update=False):
     age = 'age_recent'
     recent_posts = memcache.get(key)
     if recent_posts is None or update:
-        logging.error("CACHE QUERY RECENTPOSTS")
+        logging.debug("CACHE QUERY RECENTPOSTS")
         recent_posts = allposts()[:10]
         memcache.set(key, recent_posts)
         memcache.set(age, time.time())
     return recent_posts
 
 
-def allposts(update=False):
+def allposts(update=False, newpost=None):
     key = 'all'
-    key2 = 'recent'
+    #key2 = 'recent'
     age = 'age_recent'
     all_posts = memcache.get(key)
-    if all_posts is None or update:
-        logging.error("DB QUERY ALLPOSTS")
+    if update and newpost:
+        '''titles = [p.title for p in all_posts]
+        if newpost.title in titles:
+            for p in all_posts:
+                if newpost.title == p.title'''
+        all_posts.append(newpost)
+        memcache.set(key, all_posts)
+    elif all_posts is None or update:
+        logging.debug("DB QUERY ALLPOSTS")
         a = db.GqlQuery("SELECT * FROM Post ORDER BY created")
         all_posts = list(a)
         memcache.set(key, all_posts)
-        memcache.set(key2, all_posts[:10])
+        #memcache.set(key2, all_posts[:10])
         memcache.set(age, time.time())
         print "finished updating all the posts"
     return all_posts
@@ -37,13 +44,11 @@ def allposts(update=False):
 
 def singlepost(id):
     all_posts = allposts()
-    age = 'age_individ'
-    key = 'individ'
-    for a in all_posts:
-        if a.title == id:
-            memcache.set(age, time.time())
-            return a
-    return None
+    entries = [post for post in all_posts if post.title == id]
+    a = entries[-1]
+    print "title: " + str(a.title)
+    print "key: " + str(a.key())
+    return a
 
 
 """def individpost(id, update=False):
@@ -67,39 +72,28 @@ def allusers(update=False, newuser=None):
     all_users = memcache.get(key)
     if newuser and update and not(all_users is None):
         all_users.append(newuser)
-        print "memcache with %s" % newuser.username
-        print [user.username for user in all_users]
         memcache.set(key, all_users)
         print "allusers in memcache replaced"
     elif all_users is None or update:
         logging.error("DB QUERY ALLUSERS")
         a = db.GqlQuery("SELECT * FROM User ORDER BY created")
         all_users = list(a)
-        print "DB's users"
-        print [user.username for user in all_users]
         memcache.set(key, all_users)
-        print "finished refreshing all the users"
     return all_users
 
 
 def single_user_by_name(name):
     all_users = allusers()
-    print [user.username for user in all_users]
-    print name
     for user in all_users:
         if str(user.username) == str(name):
-            print user.username
             return user
     return None
 
 
 def single_user_by_id(id):
     all_users = allusers(True)
-    print [(user.key().id(), user.username) for user in all_users]
-    print id
     for user in all_users:
         if int(user.key().id()) == int(id):
-            print user.username
             return user
     return None
 
