@@ -32,7 +32,8 @@ class Handler(webapp2.RequestHandler):
             print "user_id_val: %s" % user_id_val
             if user_id_val:
                 uname = mydb.single_user_by_id(user_id_val)
-                return uname, True
+                if not (uname is None):
+                    return uname, True
         return None, False
 
 
@@ -76,11 +77,13 @@ class SignupPage(Handler):
             user = mydb.User(username=user_uname, password_hash=password_hash, salt=password_hash.split('|')[1], email=user_email)
             user.put()
             print "added new user %s" % user.username
-            mydb.allusers(True)
+            mydb.allusers(True, user)
             redir = self.request.cookies.get('last_post')
+            #time.sleep(1)
             if not redir:
                 redir = '/'
             self.response.headers.add_header('Set-Cookie', "user_id=%s;last_post=%s;Path=/" % (utils.make_secure_val(str(user.key().id())), str(redir)))
+            print redir
             self.redirect(str(redir))
 
 
@@ -159,7 +162,7 @@ class EditPage(Handler):
                 logging.error("THERE is a post")
                 self.render_edit(post.title, post.content, logged_in=logged_in, user=uname.username)
             else:
-                logging.error("NO POST, render %s" % entry_id)
+                logging.error("NO POST, render for edit: %s" % entry_id)
                 self.render_edit(title=entry_id, logged_in=logged_in, user=uname.username)
         else:
             self.redirect('/login')
@@ -169,6 +172,8 @@ class EditPage(Handler):
         title = entry_id
         logging.error("this is the entry_title: " + title)
         p = mydb.singlepost(entry_id)
+        if p is None:
+            p = mydb.Post(title=title)
         p.content = entry
         p.put()
         mydb.allposts(True)

@@ -62,13 +62,21 @@ def singlepost(id):
     return individ_post"""
 
 
-def allusers(update=False):
+def allusers(update=False, newuser=None):
     key = 'users'
     all_users = memcache.get(key)
-    if all_users is None or update:
+    if newuser and update and not(all_users is None):
+        all_users.append(newuser)
+        print "memcache with %s" % newuser.username
+        print [user.username for user in all_users]
+        memcache.set(key, all_users)
+        print "allusers in memcache replaced"
+    elif all_users is None or update:
         logging.error("DB QUERY ALLUSERS")
         a = db.GqlQuery("SELECT * FROM User ORDER BY created")
         all_users = list(a)
+        print "DB's users"
+        print [user.username for user in all_users]
         memcache.set(key, all_users)
         print "finished refreshing all the users"
     return all_users
@@ -86,8 +94,8 @@ def single_user_by_name(name):
 
 
 def single_user_by_id(id):
-    all_users = allusers()
-    print [user.key().id() for user in all_users]
+    all_users = allusers(True)
+    print [(user.key().id(), user.username) for user in all_users]
     print id
     for user in all_users:
         if int(user.key().id()) == int(id):
