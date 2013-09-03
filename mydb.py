@@ -25,10 +25,6 @@ def allposts(update=False, newpost=None):
     age = 'age_recent'
     all_posts = memcache.get(key)
     if update and newpost:
-        '''titles = [p.title for p in all_posts]
-        if newpost.title in titles:
-            for p in all_posts:
-                if newpost.title == p.title'''
         all_posts.append(newpost)
         memcache.set(key, all_posts)
     elif all_posts is None or update:
@@ -45,9 +41,12 @@ def allposts(update=False, newpost=None):
 def singlepost(id):
     all_posts = allposts()
     entries = [post for post in all_posts if post.title == id]
-    a = entries[-1]
-    print "title: " + str(a.title)
-    print "key: " + str(a.key())
+    try:
+        a = entries[-1]
+        print "title: " + str(a.title)
+        print "key: " + str(a.key())
+    except:
+        a = None
     return a
 
 
@@ -90,12 +89,12 @@ def single_user_by_name(name):
     return None
 
 
-def single_user_by_id(id):
+"""def single_user_by_id(id):
     all_users = allusers(True)
     for user in all_users:
         if int(user.key().id()) == int(id):
             return user
-    return None
+    return None"""
 
 
 def initialize_memcache():
@@ -123,6 +122,12 @@ class User(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
 
+    @classmethod
+    def get_by_name(cls, name):
+        return User.all().filter('username = ', name).get()
+
+
+
 
 class Post(db.Model):
     title = db.StringProperty(required=True)
@@ -130,6 +135,7 @@ class Post(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
 
-    def render(self):
-        self.render_text = self.content.replace('\n', '<br>')
+    @classmethod
+    def get_by_title(cls, title):
+        return Post.all().filter('title = ', title).get()
 

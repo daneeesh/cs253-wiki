@@ -14,15 +14,19 @@ template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape=False)
 
 class Handler(webapp2.RequestHandler):
+
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
+
 
     def render_str(self, template, **params):
         t = jinja_env.get_template(template)
         return t.render(params)
 
+
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
+
 
     def signedin(self):
         try:
@@ -30,20 +34,25 @@ class Handler(webapp2.RequestHandler):
             user_id_val = utils.check_secure_val(user_id_cookie_val)
             print "user_id_val: %s" % user_id_val
             if user_id_val:
-                uname = mydb.single_user_by_id(user_id_val)
+                uname = mydb.User.get_by_id(int(user_id_val))
+                print "uname: " + str(uname)
                 if not (uname is None):
                     return uname, True
-            return
+            else:
+                return None, False
         except:
             return None, False
 
 
 class SignupPage(Handler):
+
     def render_signup(self, uname="", uname_err="", psswrd_err="", verify_err="", email="", email_err=""):
         self.render("signup.html", uname=uname, uname_err=uname_err, psswrd_err=psswrd_err, verify_err=verify_err, email=email, email_err=email_err)
 
+
     def get(self):
         self.render_signup()
+
 
     def post(self):
         user_uname = self.request.get('username')
@@ -58,38 +67,41 @@ class SignupPage(Handler):
         email = utils.valid_email(user_email)
 
         # this will store the values to be returned
-        ret = {"uname":cgi.escape(user_uname), "uname_err":"", "psswrd_err":"", "verify_err":"", "email":cgi.escape(user_email), "email_err":""}
+        #ret = {"uname":cgi.escape(user_uname), "uname_err":"", "psswrd_err":"", "verify_err":"", "email":cgi.escape(user_email), "email_err":""}
 
         if not uname:
-            ret["uname_err"] = "That's not a valid username!"
+            uname_err = "That's not a valid username!"
         if uname_ex:
-            ret["uname_err"] = "This username already exists!"
+            uname_err = "This username already exists!"
         if not psswrd:
-            ret["psswrd_err"] = "That wasn't a valid password"
+            psswrd_err = "That wasn't a valid password"
         if not verified:
-            ret["verify_err"] = "Passwords did not match"
+            verify_err = "Passwords did not match"
         if not email:
-            ret["email_err"] = "That's not a valid email!"
+            email_err = "That's not a valid email!"
 
         if not(uname and not uname_ex and psswrd and verified and (email or user_email == "")):
-            self.render_signup(uname=ret["uname"], uname_err=ret["uname_err"], psswrd_err=ret["psswrd_err"], verify_err=ret["verify_err"], email=ret["email"], email_err=ret["email_err"])
+            self.render_signup(uname=cgi.escape(user_uname), uname_err=uname_err, psswrd_err=psswrd_err, verify_err=verify_err, email=cgi.escape(user_email), email_err=email_err)
         else:
             password_hash = utils.make_pw_hash(user_uname, user_psswrd)
             user = mydb.User(username=user_uname, password_hash=password_hash, salt=password_hash.split('|')[1], email=user_email)
             user.put()
             print "added new user %s" % user.username
-            mydb.allusers(True, user)
+            #mydb.allusers(True, user)
+            time.sleep(0.2)
+
             redir = self.request.cookies.get('Location')
-            #time.sleep(1)
+
             if not redir:
                 redir = '/'
+
             self.response.headers.add_header('Set-Cookie', "user_id=%s;Location=%s;Path=/" % (utils.make_secure_val(str(user.key().id())), str(redir)))
-            print redir
+            print "this is where we're being redirected: " + redir
             self.redirect(str(redir))
 
 
-
 class LoginPage(Handler):
+
     def render_login(self, uname="", login_err=""):
         self.render("login.html", uname=uname, login_err=login_err)
 
@@ -105,8 +117,8 @@ class LoginPage(Handler):
         valid_pwd = False
         valid_user = False
 
-        q = mydb.single_user_by_name(user_uname)
-        print q
+        q = mydb.User.get_by_name(user_uname)
+        print q.username
         if not(q is None):
             valid_user = True
             valid_pwd = utils.valid_pw(user_uname, user_psswrd, q.password_hash)
@@ -122,6 +134,7 @@ class LoginPage(Handler):
 
 
 class LogoutPage(Handler):
+
     def get(self):
         redir = self.request.cookies.get('Location')
         self.response.set_cookie('user_id', '')
@@ -129,148 +142,84 @@ class LogoutPage(Handler):
 
 
 class WikiPage(Handler):
-    def render_post(self, entry_id):
-        post = mydb.singlepost(entry_id)
+
+    def render_post(self, title):
+        post = mydb.Post.get_by_title(title)
+
         if post:
             uname, logged_in = self.signedin()
-            self.response.set_cookie('Location', entry_id)
+            self.response.set_cookie('Location', title)
+
             if logged_in:
                 self.render("individpost.html", entry=post, user=uname.username, logged_in=logged_in)
             else:
                 self.render("individpost.html", entry=post, logged_in=logged_in)
-        else:
-            logging.error("NO POST, redirect to /_edit%s" % entry_id)
-            #mydb.allposts(True)
-            self.redirect("/_edit"+entry_id)
 
-    def get(self, entry_id):
-        self.render_post(entry_id)
+        else:
+            logging.error("NO POST, redirect to /_edit%s" % title)
+            #mydb.allposts(True)
+            self.redirect("/_edit" + title)
+
+    def get(self, title):
+        self.render_post(title)
 
 
 class EditPage(Handler):
+
     def render_edit(self, title="", content="", logged_in=False, user=""):
         self.render("edit.html", title=title, content=content, logged_in=logged_in, user=user)
 
-    def get(self, entry_id):
+    def get(self, title):
         uname, logged_in = self.signedin()
-        print uname
-        post = mydb.singlepost(entry_id)
+        post = mydb.Post.get_by_title(title)
         if logged_in:
-            self.response.set_cookie('Location', '/_edit'+entry_id)
-            logging.debug("entry id for editing: " + entry_id)
+            self.response.set_cookie('Location', '/_edit'+title)
+            logging.debug("entry id for editing: " + title)
+
             if post:
                 logging.error("THERE is a post")
                 self.render_edit(post.title, post.content, logged_in=logged_in, user=uname.username)
             else:
-                logging.error("NO POST, render for edit: %s" % entry_id)
-                self.render_edit(title=entry_id, logged_in=logged_in, user=uname.username)
-        else:
-            if post is None:
-                p = mydb.Post(title=entry_id, content=" ")
-                p.put()
-                mydb.allposts(True, p)
-            self.redirect('/..' + entry_id)
+                logging.error("NO POST, render for edit: %s" % title)
+                self.render_edit(title=title, logged_in=logged_in, user=uname.username)
 
-    def post(self, entry_id):
+        else:
+
+            if post is None:
+                self.redirect('/login')
+            else:
+                self.redirect('..' + title)
+
+    def post(self, title):
         uname, logged_in = self.signedin()
-        print entry_id
-        p = mydb.singlepost(entry_id)
+        print title
+        p = mydb.Post.get_by_title(title)
+
         if logged_in:
             entry = self.request.get("content")
             print entry
-            logging.error("this is the entry_title: " + entry_id)
+            logging.error("this is the entry_title: " + title)
             print "p is none: " + str(p is None)
+
             if p is None:
-                p = mydb.Post(title=entry_id, content=entry)
+                print "tried to post to edit page and s/he was logged in and there wasn't a post"
+                p = mydb.Post(title=title, content=entry)
+            else:
+                print "tried to post to edit page and s/he was logged in and there was a post"
+
             p.content = entry
             p.put()
             print "updated content: " + str(p.content)
             print "edit post entry key after put: " + str(p.key())
-            mydb.allposts(True, p)
+            #mydb.allposts(True, p)
+            time.sleep(0.2)
+            self.redirect('..'+title)
+
         else:
             if p is None:
-                p = mydb.Post(title=entry_id, content=" ")
-                p.put()
-                mydb.allposts(True, p)
-        self.redirect('/..'+entry_id)
+                print "tried to post to edit page but wasn't logged in and there was no post"
+                self.redirect('/login')
+            else:
+                print "tried to post to edit page but wasn't logged in and there was a post"
+                self.redirect('..'+title)
 
-
-
-#This should be useless but kept it here for now
-class JSONHandler(webapp2.RequestHandler):
-    def write(self, *a):
-        self.response.headers['Content-Type'] = 'application/json; charset=UTF-8'
-        self.response.out.write(json.dumps(*a))
-
-    def create_json_entry(self, post):
-        return {"content": post.content,
-                "subject": post.title, "created": post.created.strftime("%a %b %H:%M:%S %Y"), "last_modified": post.last_modified.strftime("%a %b %H:%M:%S %Y")}
-
-
-class SingleJSON(JSONHandler):
-    def get(self, entry_id):
-        post = mydb.singlepost(int(entry_id))
-        json_entry = self.create_json_entry(post)
-        self.write(json_entry)
-
-
-class MainJSON(JSONHandler):
-    def get(self):
-        posts = mydb.allposts()
-        post_list = [self.create_json_entry(post) for post in posts]
-        self.write(post_list)
-
-
-class Flush(Handler):
-    def get(self):
-        mydb.flush_memcache()
-        self.redirect('/')
-
-
-class WelcomePage(Handler):
-    def render_welcome(self, user=""):
-        self.render("welcome.html", username=user)
-
-    def get(self):
-        user_id_cookie_val = self.request.cookies.get('user_id')
-        if user_id_cookie_val:
-            user_id_val = utils.check_secure_val(user_id_cookie_val)
-            if user_id_val:
-                uname = mydb.single_user_by_id(user_id_val)
-                self.render_welcome(uname)
-        else:
-            self.redirect('/signup')
-
-
-class NewPost(Handler):
-    def render_newpost(self, title="", content="", error=""):
-        self.render("newpost.html", title=title, content=content, error=error)
-
-    def get(self):
-        self.render_newpost()
-
-    def post(self):
-        title = self.request.get("subject")
-        content = self.request.get("content")
-
-        if title and content:
-            a = mydb.Post(title = title, content = content)
-            a.put()
-            mydb.allposts(True)
-            id = a.key().id()
-            self.redirect("/"+str(id))
-        else:
-            error = "we need a title and some content"
-            self.render_newpost(title, content, error)
-
-
-class MainPage(Handler):
-    def render_front(self, title="", content="", error=""):
-        posts = mydb.recentposts()
-        if mydb.memcache_get('age') is None:
-            mydb.memcache_set('age', time.time())
-        age = '%i' % (time.time() - mydb.memcache_get('age'))
-        self.render("front.html", title=title, age=age, content=content, error=error, posts=posts)
-
-    def get(self):
-        self.render_front()

@@ -39,20 +39,19 @@ def valid_pw(name, pw, h):
     new_h = make_pw_hash(name, pw, h)
     return new_h == h
 
-USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
-PSSWRD_RE = re.compile(r"^.{3,20}$")
-EMAIL_RE = re.compile(r"^[\S]+@[\S]+\.[\S]+$")
-
 
 def valid_uname(uname):
+    USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
     return USER_RE.match(uname)
 
 
 def valid_psswrd(psswrd):
+    PSSWRD_RE = re.compile(r"^.{3,20}$")
     return PSSWRD_RE.match(psswrd)
 
 
 def valid_email(email):
+    EMAIL_RE = re.compile(r"^[\S]+@[\S]+\.[\S]+$")
     return EMAIL_RE.match(email)
 
 
@@ -61,5 +60,5 @@ def verify_psswrd(orig, rep):
 
 
 def user_exists(uname):
-    q = mydb.single_user_by_name(uname)
+    q = mydb.User.get_by_name(uname)
     return not(q is None)
