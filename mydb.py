@@ -2,6 +2,7 @@
 
 import logging
 import time
+import datetime
 
 from google.appengine.api import memcache
 from google.appengine.ext import db
@@ -141,7 +142,7 @@ class Posts(db.Model):
     title = db.StringProperty(required=True)
     content = db.StringListProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
-    last_modified = db.ListProperty(datetime.datetime, auto_now=True)
+    last_modified = db.ListProperty(datetime.datetime)
 
     @classmethod
     def get_by_title_version(cls, title, version):
@@ -154,7 +155,10 @@ class Posts(db.Model):
     @classmethod
     def get_latest_by_title(cls, title):
         ps = Posts.all().filter('title = ', title).get()
-        return Post(title=title, content=ps.content[-1])
+        if ps is None:
+            return None
+        else:
+            return Post(title=title, content=ps.content[-1])
 
     @classmethod
     def get_all_versions(cls, title):
@@ -163,7 +167,14 @@ class Posts(db.Model):
     @classmethod
     def add_new(cls, title, content):
         p = Posts.all().filter('title = ', title).get()
-        p.content = p.content.append(content)
+        print "p is not none is add_new"
+        cont = p.content
+        cont.append(content)
+        print cont
+        p.content = cont
+        l = p.last_modified
+        l.append(datetime.datetime.now())
+        p.last_modified = l
         p.put()
         print p.content
         print p.last_modified

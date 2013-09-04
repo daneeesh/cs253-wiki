@@ -7,8 +7,10 @@
 <body>
     <div class="login-area">
         {% if logged_in %}
-            <a class="login-link" href="/_edit{{entry.title}}">edit</a>
+            <a class="login-link" href="/_edit{{ entry.title }}">edit</a>
             |
+            <a class="login-link" href="/_history{{ entry.title }}">history</a>
+            <pre>   </pre>
             <a class="login-link">{{user}}</a>
              (<a class="login-link" href="/logout">logout</a>)
         {% else %}

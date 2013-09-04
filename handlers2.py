@@ -9,6 +9,7 @@ import utils
 import mydb
 import cgi
 import logging
+import datetime
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape=False)
@@ -143,9 +144,9 @@ class LogoutPage(Handler):
 class WikiPage(Handler):
 
     def render_post(self, title):
-        version = int(self.request.get("v"))
-        if version:
-            post = mydb.Posts.get_by_title_version(title, version)
+        version = self.request.get("v")
+        if version.isdigit():
+            post = mydb.Posts.get_by_title_version(title, int(version))
         else:
             post = mydb.Posts.get_latest_by_title(title)
 
@@ -196,7 +197,7 @@ class EditPage(Handler):
     def post(self, title):
         uname, logged_in = self.signedin()
         print title
-        p = mydb.Post.get_by_title(title)
+        p = mydb.Posts.get_latest_by_title(title)
 
         if logged_in:
             entry = self.request.get("content")
@@ -206,15 +207,15 @@ class EditPage(Handler):
 
             if p is None:
                 print "tried to post to edit page and s/he was logged in and there wasn't a post"
-                p = mydb.Posts(title=title, content=[entry])
+                p = mydb.Posts(title=title, content=[entry], last_modified=[datetime.datetime.now()])
                 p.put()
             else:
                 print "tried to post to edit page and s/he was logged in and there was a post"
                 mydb.Posts.add_new(title,entry)
-            print "updated content: " + str(p.content)
-            print "edit post entry key after put: " + str(p.key())
-            #mydb.allposts(True, p)
             time.sleep(0.2)
+            #print "updated content: " + str(p.content)
+            #print "edit post entry key after put: " + str(p.key())
+            #mydb.allposts(True, p)
             self.redirect('..'+title)
 
         else:
@@ -237,8 +238,9 @@ class HistoryPage(Handler):
         n = len(ps.content)
         i = 0
         while i < n:
-            posts.append((mydb.Post(title=title, content=ps.content[i], created=ps.last_modified[i]), i))
+            posts.append((mydb.Post(title=title, content=cgi.escape(ps.content[i]), created=ps.last_modified[i]), i))
             i += 1
+        posts.reverse()
         return posts
 
     def get(self, title):
@@ -246,7 +248,7 @@ class HistoryPage(Handler):
         posts = self.create_history(title)
 
         if logged_in:
-            self.render_history(title=title, entry=posts, user=uname)
+            self.render_history(title=title, entry=posts, user=uname.username)
 
         else:
             if p is None:

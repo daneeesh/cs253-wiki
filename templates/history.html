@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Edit {{title}}</title>
+    <title>{{title}} History</title>
     <link type="text/css" rel="stylesheet" href="/style/main.css" />
 </head>
 <body>
+    <p>
     <div class="login-area">
         <a class="login-link" href="/_edit{{title}}">edit</a>
         |
         <a class="login-link" href="{{title}}">view</a>
-        <pre>   </pre>
+        ||
         <a class="login-link">{{user}}</a>
         (<a class="login-link" href="/logout">logout</a>)
     </div>
+    </p>
     <table>
     {% for e in entry %}
         <tr>
-            <td>{% e[0].last_modified.strftime() %}</td>
-            <td>{%str(e[0].content)[:100] + '(...)'%}</td>
+            <td>{{ e[0].created.strftime('%a %b %d %X %Y') }}</td>
+            <td>{{e[0].content[:100]}}</td>
             <td><a class="login-link" href="{{title}}?v={{e[1]}}">view</a></td>
             <td><a class="login-link" href="/_edit{{title}}">edit</a></td>
         </tr>
