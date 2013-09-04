@@ -11,6 +11,7 @@ LogoutHandler = handlers2.LogoutPage
 SignupHandler = handlers2.SignupPage
 WikiHandler = handlers2.WikiPage
 EditHandler = handlers2.EditPage
+HistoryPage = handlers2.HistoryPage
 #FlushHandler = handlers2.Flush
 
 app = webapp2.WSGIApplication([
@@ -18,5 +19,6 @@ app = webapp2.WSGIApplication([
     ('/logout', LogoutHandler),
     ('/signup', SignupHandler),
     ('/_edit'+PAGE_RE, EditHandler),
+    ('/_history' + PAGE_RE, HistoryPage),
     (PAGE_RE, WikiHandler)
 ], debug=True)

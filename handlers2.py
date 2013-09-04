@@ -118,7 +118,6 @@ class LoginPage(Handler):
         valid_user = False
 
         q = mydb.User.get_by_name(user_uname)
-        print q.username
         if not(q is None):
             valid_user = True
             valid_pwd = utils.valid_pw(user_uname, user_psswrd, q.password_hash)
@@ -144,7 +143,11 @@ class LogoutPage(Handler):
 class WikiPage(Handler):
 
     def render_post(self, title):
-        post = mydb.Post.get_by_title(title)
+        version = int(self.request.get("v"))
+        if version:
+            post = mydb.Posts.get_by_title_version(title, version)
+        else:
+            post = mydb.Posts.get_latest_by_title(title)
 
         if post:
             uname, logged_in = self.signedin()
@@ -167,21 +170,21 @@ class WikiPage(Handler):
 class EditPage(Handler):
 
     def render_edit(self, title="", content="", logged_in=False, user=""):
-        self.render("edit.html", title=title, content=content, logged_in=logged_in, user=user)
+        self.render("edit.html", title=title, content=content, user=user)
 
     def get(self, title):
         uname, logged_in = self.signedin()
-        post = mydb.Post.get_by_title(title)
+        post = mydb.Posts.get_latest_by_title(title)
         if logged_in:
             self.response.set_cookie('Location', '/_edit'+title)
             logging.debug("entry id for editing: " + title)
 
             if post:
                 logging.error("THERE is a post")
-                self.render_edit(post.title, post.content, logged_in=logged_in, user=uname.username)
+                self.render_edit(post.title, post.content, user=uname.username)
             else:
                 logging.error("NO POST, render for edit: %s" % title)
-                self.render_edit(title=title, logged_in=logged_in, user=uname.username)
+                self.render_edit(title=title, user=uname.username)
 
         else:
 
@@ -203,12 +206,11 @@ class EditPage(Handler):
 
             if p is None:
                 print "tried to post to edit page and s/he was logged in and there wasn't a post"
-                p = mydb.Post(title=title, content=entry)
+                p = mydb.Posts(title=title, content=[entry])
+                p.put()
             else:
                 print "tried to post to edit page and s/he was logged in and there was a post"
-
-            p.content = entry
-            p.put()
+                mydb.Posts.add_new(title,entry)
             print "updated content: " + str(p.content)
             print "edit post entry key after put: " + str(p.key())
             #mydb.allposts(True, p)
@@ -223,3 +225,31 @@ class EditPage(Handler):
                 print "tried to post to edit page but wasn't logged in and there was a post"
                 self.redirect('..'+title)
 
+
+class HistoryPage(Handler):
+
+    def render_history(self, title="", entry="", logged_in=False, user=""):
+        self.render("history.html", title=title, entry=entry, user=user)
+
+    def create_history(self, title):
+        ps = mydb.Posts.get_all_versions(title)
+        posts = []
+        n = len(ps.content)
+        i = 0
+        while i < n:
+            posts.append((mydb.Post(title=title, content=ps.content[i], created=ps.last_modified[i]), i))
+            i += 1
+        return posts
+
+    def get(self, title):
+        uname, logged_in = self.signedin()
+        posts = self.create_history(title)
+
+        if logged_in:
+            self.render_history(title=title, entry=posts, user=uname)
+
+        else:
+            if p is None:
+                self.redirect('/login')
+            else:
+                self.redirect('..'+title)

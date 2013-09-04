@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" name="Default" comment="lag problems didn't completely disappeared so went back to basics and created handlers2. this accesses the DB every time but a short sleep after saving new instances solves the problems with lag. TODO: implement memcache correctly without lag issues.">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/handlers2.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handlers.py" afterPath="$PROJECT_DIR$/handlers.py" />
+    <list default="true" id="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/templates/history.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/edit.html" afterPath="$PROJECT_DIR$/templates/edit.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handlers2.py" afterPath="$PROJECT_DIR$/handlers2.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mydb.py" afterPath="$PROJECT_DIR$/mydb.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utils.py" afterPath="$PROJECT_DIR$/utils.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="wiki.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/main.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378223998461" ignored="false" />
-    <file path="/mydb.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378222443104" ignored="false" />
+    <file path="/main.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378233483382" ignored="false" />
+    <file path="/mydb.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378313806883" ignored="false" />
     <file path="/handlers.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378221713759" ignored="false" />
     <file path="/utils.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378224936152" ignored="false" />
-    <file path="/Dummy.txt" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378227227358" ignored="false" />
+    <file path="/Dummy.txt" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378232370671" ignored="false" />
     <file path="/login.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1377809129138" ignored="false" />
     <file path="/individpost.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378119477983" ignored="false" />
-    <file path="/edit.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1377865959533" ignored="false" />
-    <file path="/handlers2.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378230034785" ignored="false" />
+    <file path="/edit.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378235722100" ignored="false" />
+    <file path="/handlers2.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378313971632" ignored="false" />
+    <file path="/history.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378313911366" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +43,7 @@
       <file leaf-file-name="mydb.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mydb.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="96" column="18" selection-start="2610" selection-end="2610" vertical-scroll-proportion="0.0">
+            <state line="133" column="5" selection-start="3447" selection-end="3447" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="e#23#37#0" expanded="true" />
               </folding>
@@ -53,7 +54,7 @@
       <file leaf-file-name="main.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="1" selection-start="283" selection-end="283" vertical-scroll-proportion="0.0">
+            <state line="11" column="32" selection-start="248" selection-end="248" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="e#23#37#0" expanded="true" />
               </folding>
@@ -86,7 +87,7 @@
       <file leaf-file-name="handlers2.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/handlers2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="190" column="31" selection-start="6432" selection-end="6432" vertical-scroll-proportion="0.8240469">
+            <state line="241" column="20" selection-start="8279" selection-end="8279" vertical-scroll-proportion="0.5821114">
               <folding>
                 <element signature="e#23#32#0" expanded="true" />
               </folding>
@@ -94,19 +95,28 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="edit.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/edit.html">
+      <file leaf-file-name="history.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/history.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="28" selection-start="582" selection-end="582" vertical-scroll-proportion="-13.043478">
+            <state line="20" column="46" selection-start="652" selection-end="652" vertical-scroll-proportion="-12.5">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="login.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/login.html">
+      <file leaf-file-name="front.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../cookie/templates/front.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="4" selection-start="59" selection-end="122" vertical-scroll-proportion="-2.6086957">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="edit.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/edit.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="10" column="36" selection-start="262" selection-end="262" vertical-scroll-proportion="-6.25">
               <folding />
             </state>
           </provider>
@@ -115,16 +125,7 @@
       <file leaf-file-name="individpost.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/individpost.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="10" selection-start="648" selection-end="648" vertical-scroll-proportion="-14.347826">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="front.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/front.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0">
+            <state line="22" column="10" selection-start="648" selection-end="648" vertical-scroll-proportion="-13.75">
               <folding />
             </state>
           </provider>
@@ -133,7 +134,7 @@
       <file leaf-file-name="signup.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/signup.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="50" selection-start="107" selection-end="107" vertical-scroll-proportion="-2.6086957">
+            <state line="4" column="50" selection-start="107" selection-end="107" vertical-scroll-proportion="-2.5">
               <folding />
             </state>
           </provider>
@@ -161,12 +162,13 @@
         <option value="$PROJECT_DIR$/templates/login.html" />
         <option value="$PROJECT_DIR$/templates/style/main.css" />
         <option value="$PROJECT_DIR$/templates/signup.html" />
-        <option value="$PROJECT_DIR$/templates/edit.html" />
         <option value="$PROJECT_DIR$/templates/individpost.html" />
         <option value="$PROJECT_DIR$/handlers.py" />
-        <option value="$PROJECT_DIR$/mydb.py" />
-        <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/utils.py" />
+        <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/templates/edit.html" />
+        <option value="$PROJECT_DIR$/mydb.py" />
+        <option value="$PROJECT_DIR$/templates/history.html" />
         <option value="$PROJECT_DIR$/handlers2.py" />
       </list>
     </option>
@@ -228,7 +230,35 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="cookie" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
               <option name="myItemId" value="wiki" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wiki" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wiki" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wiki" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -407,7 +437,11 @@
       <created>1378138425765</created>
       <updated>1378138425765</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="lag problems didn't completely disappear so went back to basics and created handlers2. this accesses the DB every time but a short sleep after saving new instances solves the problems with lag. TODO: implement memcache correctly without lag issues.">
+      <created>1378232400644</created>
+      <updated>1378232400644</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -476,7 +510,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="hacked solution to ensure that the right content is displayed after an edit - problems with lag in the database and creating new instances instead of updating them cause incorrect behaviour. should fix this properly later." />
+    <option name="LAST_COMMIT_MESSAGE" value="lag problems didn't completely disappear so went back to basics and created handlers2. this accesses the DB every time but a short sleep after saving new instances solves the problems with lag. TODO: implement memcache correctly without lag issues." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -499,6 +533,7 @@
     <MESSAGE value="fixed bug: entries are updated instead of stored multiple times" />
     <MESSAGE value="fixed an issue with the database not updating fast enough and propagating these changes to memcache when queried soon after the addition of a new user at signup." />
     <MESSAGE value="hacked solution to ensure that the right content is displayed after an edit - problems with lag in the database and creating new instances instead of updating them cause incorrect behaviour. should fix this properly later." />
+    <MESSAGE value="lag problems didn't completely disappear so went back to basics and created handlers2. this accesses the DB every time but a short sleep after saving new instances solves the problems with lag. TODO: implement memcache correctly without lag issues." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -541,30 +576,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/signup.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="50" selection-start="107" selection-end="107" vertical-scroll-proportion="-2.6086957">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/login.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="4" column="4" selection-start="59" selection-end="122" vertical-scroll-proportion="-2.6086957">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/edit.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="28" selection-start="582" selection-end="582" vertical-scroll-proportion="-13.043478">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/individpost.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="10" selection-start="648" selection-end="648" vertical-scroll-proportion="-14.347826">
           <folding />
         </state>
       </provider>
@@ -578,24 +592,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="1" selection-start="283" selection-end="283" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#23#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mydb.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="96" column="18" selection-start="2610" selection-end="2610" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#23#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="62" column="30" selection-start="1246" selection-end="1246" vertical-scroll-proportion="0.0">
@@ -605,9 +601,62 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="32" selection-start="248" selection-end="248" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#23#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/individpost.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="10" selection-start="648" selection-end="648" vertical-scroll-proportion="-13.75">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/signup.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="50" selection-start="107" selection-end="107" vertical-scroll-proportion="-2.5">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/edit.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="36" selection-start="262" selection-end="262" vertical-scroll-proportion="-6.25">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../cookie/templates/front.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mydb.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="133" column="5" selection-start="3447" selection-end="3447" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#23#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/history.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="46" selection-start="652" selection-end="652" vertical-scroll-proportion="-12.5">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/handlers2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="190" column="31" selection-start="6432" selection-end="6432" vertical-scroll-proportion="0.8240469">
+        <state line="241" column="20" selection-start="8279" selection-end="8279" vertical-scroll-proportion="0.5821114">
           <folding>
             <element signature="e#23#32#0" expanded="true" />
           </folding>

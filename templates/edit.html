@@ -6,13 +6,12 @@
 </head>
 <body>
     <div class="login-area">
-        {% if logged_in %}
-            <a class="login-link">{{user}}</a>
-             (<a class="login-link" href="/logout">logout</a>)
-        {% else %}
-            <a class="login-link" href="/login">login</a>
-        {% endif %}
-
+        <a class="login-link">edit</a>
+        |
+        <a class="login-link" href="/_history{{title}}">history</a>
+        <pre>   </pre>
+        <a class="login-link">{{user}}</a>
+        (<a class="login-link" href="/logout">logout</a>)
     </div>
     <form method="post">
         <div class="textarea">

@@ -127,15 +127,43 @@ class User(db.Model):
         return User.all().filter('username = ', name).get()
 
 
-
-
 class Post(db.Model):
     title = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
-    last_modified = db.DateTimeProperty(auto_now=True)
+    #last_modified = db.DateTimeProperty(auto_now=True)
 
     @classmethod
     def get_by_title(cls, title):
         return Post.all().filter('title = ', title).get()
 
+class Posts(db.Model):
+    title = db.StringProperty(required=True)
+    content = db.StringListProperty(required=True)
+    created = db.DateTimeProperty(auto_now_add=True)
+    last_modified = db.ListProperty(datetime.datetime, auto_now=True)
+
+    @classmethod
+    def get_by_title_version(cls, title, version):
+        ps = Posts.all().filter('title = ', title).get()
+        if version <= len(ps.content):
+            return Post(title=title, content=ps.content[version])
+        else:
+            return None
+
+    @classmethod
+    def get_latest_by_title(cls, title):
+        ps = Posts.all().filter('title = ', title).get()
+        return Post(title=title, content=ps.content[-1])
+
+    @classmethod
+    def get_all_versions(cls, title):
+        return Posts.all().filter('title = ', title).get()
+
+    @classmethod
+    def add_new(cls, title, content):
+        p = Posts.all().filter('title = ', title).get()
+        p.content = p.content.append(content)
+        p.put()
+        print p.content
+        print p.last_modified
