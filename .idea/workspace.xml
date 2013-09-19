@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/edit.html" afterPath="$PROJECT_DIR$/templates/edit.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handlers2.py" afterPath="$PROJECT_DIR$/handlers2.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/history.html" afterPath="$PROJECT_DIR$/templates/history.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/individpost.html" afterPath="$PROJECT_DIR$/templates/individpost.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mydb.py" afterPath="$PROJECT_DIR$/mydb.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/signup.html" afterPath="$PROJECT_DIR$/templates/signup.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="wiki.iws" />
@@ -15,7 +11,7 @@
     <file path="/mydb.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378320745381" ignored="false" />
     <file path="/handlers.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378221713759" ignored="false" />
     <file path="/utils.py" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378224936152" ignored="false" />
-    <file path="/Dummy.txt" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378314009020" ignored="false" />
+    <file path="/Dummy.txt" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378322899674" ignored="false" />
     <file path="/login.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1377809129138" ignored="false" />
     <file path="/individpost.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378318621428" ignored="false" />
     <file path="/edit.html" changelist="b3bfc9fb-7497-4bfe-818d-b9e4db3b0d3a" time="1378235722100" ignored="false" />
@@ -73,10 +69,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="handlers2.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="handlers2.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/handlers2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="250" column="77" selection-start="8606" selection-end="8606" vertical-scroll-proportion="0.7360704">
+            <state line="250" column="77" selection-start="8606" selection-end="8606" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="e#23#32#0" expanded="true" />
               </folding>
@@ -120,10 +116,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="signup.html" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="signup.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/templates/signup.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="50" selection-start="107" selection-end="107" vertical-scroll-proportion="-2.5">
+            <state line="12" column="26" selection-start="295" selection-end="295" vertical-scroll-proportion="0.26825634">
               <folding />
             </state>
           </provider>
@@ -150,7 +146,6 @@
       <list>
         <option value="$PROJECT_DIR$/templates/login.html" />
         <option value="$PROJECT_DIR$/templates/style/main.css" />
-        <option value="$PROJECT_DIR$/templates/signup.html" />
         <option value="$PROJECT_DIR$/handlers.py" />
         <option value="$PROJECT_DIR$/utils.py" />
         <option value="$PROJECT_DIR$/main.py" />
@@ -159,6 +154,7 @@
         <option value="$PROJECT_DIR$/templates/history.html" />
         <option value="$PROJECT_DIR$/templates/edit.html" />
         <option value="$PROJECT_DIR$/handlers2.py" />
+        <option value="$PROJECT_DIR$/templates/signup.html" />
       </list>
     </option>
   </component>
@@ -261,6 +257,7 @@
     <property name="recentsLimit" value="5" />
     <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
     <property name="last_opened_file_path" value="$USER_HOME$/Downloads/hw3/templates/base.html" />
+    <property name="FullScreen" value="false" />
     <property name="DefaultHtmlFileTemplate" value="Html5" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
@@ -434,7 +431,11 @@
       <created>1378314051218</created>
       <updated>1378314051218</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="history seems to be working now. fixed many-many bugs.">
+      <created>1378322912702</created>
+      <updated>1378322912702</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -503,7 +504,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="added history handling." />
+    <option name="LAST_COMMIT_MESSAGE" value="history seems to be working now. fixed many-many bugs." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -528,6 +529,7 @@
     <MESSAGE value="hacked solution to ensure that the right content is displayed after an edit - problems with lag in the database and creating new instances instead of updating them cause incorrect behaviour. should fix this properly later." />
     <MESSAGE value="lag problems didn't completely disappear so went back to basics and created handlers2. this accesses the DB every time but a short sleep after saving new instances solves the problems with lag. TODO: implement memcache correctly without lag issues." />
     <MESSAGE value="added history handling." />
+    <MESSAGE value="history seems to be working now. fixed many-many bugs." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -583,13 +585,6 @@
           <folding>
             <element signature="e#23#37#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/signup.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="50" selection-start="107" selection-end="107" vertical-scroll-proportion="-2.5">
-          <folding />
         </state>
       </provider>
     </entry>
@@ -650,10 +645,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/handlers2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="250" column="77" selection-start="8606" selection-end="8606" vertical-scroll-proportion="0.7360704">
+        <state line="250" column="77" selection-start="8606" selection-end="8606" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="e#23#32#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/signup.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="26" selection-start="295" selection-end="295" vertical-scroll-proportion="0.26825634">
+          <folding />
         </state>
       </provider>
     </entry>

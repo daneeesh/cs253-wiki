@@ -5,7 +5,7 @@ import time
 import datetime
 
 from google.appengine.api import memcache
-from google.appengine.ext import db
+from google.appengine.ext import db, ndb
 
 
 def recentposts(update=False):
@@ -115,38 +115,38 @@ def memcache_set(key, value):
     memcache.set(key, value)
 
 
-class User(db.Model):
-    username = db.StringProperty(required=True)
-    password_hash = db.StringProperty(required=True)
-    salt = db.StringProperty(required=True)
-    email = db.StringProperty(required=False)
-    created = db.DateTimeProperty(auto_now_add=True)
-    last_modified = db.DateTimeProperty(auto_now=True)
+class User(ndb.Model):
+    username = ndb.StringProperty(required=True)
+    password_hash = ndb.StringProperty(required=True)
+    salt = ndb.StringProperty(required=True)
+    email = ndb.StringProperty(required=False)
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    last_modified = ndb.DateTimeProperty(auto_now=True)
 
     @classmethod
     def get_by_name(cls, name):
-        return User.all().filter('username = ', name).get()
+        return User.query(User.username==name).get()
 
 
-class Post(db.Model):
-    title = db.StringProperty(required=True)
-    content = db.TextProperty(required=True)
-    created = db.DateTimeProperty(auto_now_add=True)
+class Post(ndb.Model):
+    title = ndb.StringProperty(required=True)
+    content = ndb.TextProperty(required=True)
+    created = ndb.DateTimeProperty(auto_now_add=True)
     #last_modified = db.DateTimeProperty(auto_now=True)
 
     @classmethod
     def get_by_title(cls, title):
-        return Post.all().filter('title = ', title).get()
+        return Post.query(Post.title==title).get()
 
-class Posts(db.Model):
-    title = db.StringProperty(required=True)
-    content = db.StringListProperty(required=True)
-    created = db.DateTimeProperty(auto_now_add=True)
-    last_modified = db.ListProperty(datetime.datetime)
+class Posts(ndb.Model):
+    title = ndb.StringProperty(required=True)
+    content = ndb.StringProperty(repeated=True)
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    last_modified = ndb.DateTimeProperty(repeated=True)
 
     @classmethod
     def get_by_title_version(cls, title, version):
-        ps = Posts.all().filter('title = ', title).get()
+        ps = Posts.query(Posts.title==title).get()
         if version <= len(ps.content):
             return Post(title=title, content=ps.content[version])
         else:
@@ -154,7 +154,7 @@ class Posts(db.Model):
 
     @classmethod
     def get_latest_by_title(cls, title):
-        ps = Posts.all().filter('title = ', title).get()
+        ps = Posts.query(Posts.title==title).get()
         if ps is None:
             return None
         else:
@@ -162,11 +162,11 @@ class Posts(db.Model):
 
     @classmethod
     def get_all_versions(cls, title):
-        return Posts.all().filter('title = ', title).get()
+        return Posts.query(Posts.title==title).get()
 
     @classmethod
     def add_new(cls, title, content):
-        p = Posts.all().filter('title = ', title).get()
+        p = Posts.query(Posts.title==title).get()
         print "p is not none is add_new"
         cont = p.content
         cont.append(content)

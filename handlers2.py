@@ -96,7 +96,7 @@ class SignupPage(Handler):
             if not redir:
                 redir = '/'
 
-            self.response.headers.add_header('Set-Cookie', "user_id=%s;Location=%s;Path=/" % (utils.make_secure_val(str(user.key().id())), str(redir)))
+            self.response.headers.add_header('Set-Cookie', "user_id=%s;Location=%s;Path=/" % (utils.make_secure_val(str(user.key.id())), str(redir)))
             print "this is where we're being redirected: " + redir
             self.redirect(str(redir))
 
@@ -127,7 +127,7 @@ class LoginPage(Handler):
             redir = self.request.cookies.get('Location')
             if not redir:
                 redir = '/'
-            self.response.headers.add_header('Set-Cookie', "user_id=%s;Location=%s;Path=/" % (utils.make_secure_val(str(q.key().id())), str(redir)))
+            self.response.headers.add_header('Set-Cookie', "user_id=%s;Location=%s;Path=/" % (utils.make_secure_val(str(q.key.id())), str(redir)))
             self.redirect(str(redir))
         else:
             self.render_login(uname=cgi.escape(user_uname), login_err="Invalid username or password")
