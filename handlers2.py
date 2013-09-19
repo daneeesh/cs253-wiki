@@ -15,7 +15,7 @@ template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape=False)
 
 class Handler(webapp2.RequestHandler):
-
+    """This is the main Handler class that has all the common functions."""
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
 
@@ -30,15 +30,16 @@ class Handler(webapp2.RequestHandler):
 
 
     def signedin(self):
+        """Check if the user is signed in"""
         try:
             user_id_cookie_val = self.request.cookies.get('user_id')
             user_id_val = utils.check_secure_val(user_id_cookie_val)
-            print "user_id_val: %s" % user_id_val
+            #print "user_id_val: %s" % user_id_val
             if user_id_val:
-                uname = mydb.User.get_by_id(int(user_id_val))
-                print "uname: " + str(uname)
-                if not (uname is None):
-                    return uname, True
+                user = mydb.single_user_by_id(int(user_id_val))
+                print "user: " + str(user)
+                if not (user is None):
+                    return user, True
             else:
                 return None, False
         except:
@@ -46,9 +47,15 @@ class Handler(webapp2.RequestHandler):
 
 
 class SignupPage(Handler):
-
+    """This class handles the Signup page."""
     def render_signup(self, uname="", uname_err="", psswrd_err="", verify_err="", email="", email_err=""):
-        self.render("signup.html", uname=uname, uname_err=uname_err, psswrd_err=psswrd_err, verify_err=verify_err, email=email, email_err=email_err)
+        self.render("signup.html",
+                     uname=uname,
+                     uname_err=uname_err,
+                     psswrd_err=psswrd_err,
+                     verify_err=verify_err,
+                     email=email,
+                     email_err=email_err)
 
 
     def get(self):
@@ -67,9 +74,7 @@ class SignupPage(Handler):
         verified = utils.verify_psswrd(user_psswrd, user_ver)
         email = utils.valid_email(user_email)
 
-        # this will store the values to be returned
-        #ret = {"uname":cgi.escape(user_uname), "uname_err":"", "psswrd_err":"", "verify_err":"", "email":cgi.escape(user_email), "email_err":""}
-
+        #Create error messages
         if not uname:
             uname_err = "That's not a valid username!"
         if uname_ex:
@@ -82,28 +87,33 @@ class SignupPage(Handler):
             email_err = "That's not a valid email!"
 
         if not(uname and not uname_ex and psswrd and verified and (email or user_email == "")):
-            self.render_signup(uname=cgi.escape(user_uname), uname_err=uname_err, psswrd_err=psswrd_err, verify_err=verify_err, email=cgi.escape(user_email), email_err=email_err)
+            #There was an error in one of the fields.
+            self.render_signup(uname=cgi.escape(user_uname),
+                               uname_err=uname_err,
+                               psswrd_err=psswrd_err,
+                               verify_err=verify_err,
+                               email=cgi.escape(user_email),
+                               email_err=email_err)
         else:
+            #Create a new user.
             password_hash = utils.make_pw_hash(user_uname, user_psswrd)
             user = mydb.User(username=user_uname, password_hash=password_hash, salt=password_hash.split('|')[1], email=user_email)
             user.put()
             mydb.allusers(update=True, newuser=user)
             print "added new user %s" % user.username
-            #mydb.allusers(True, user)
-            #time.sleep(0.2)
 
+            #Redirect the user back to entry where they came from.
             redir = self.request.cookies.get('Location')
 
             if not redir:
                 redir = '/'
 
             self.response.headers.add_header('Set-Cookie', "user_id=%s;Location=%s;Path=/" % (utils.make_secure_val(str(user.key.id())), str(redir)))
-            print "this is where we're being redirected: " + redir
             self.redirect(str(redir))
 
 
 class LoginPage(Handler):
-
+    """This class handles the Login page."""
     def render_login(self, uname="", login_err=""):
         self.render("login.html", uname=uname, login_err=login_err)
 
@@ -114,18 +124,16 @@ class LoginPage(Handler):
         user_uname = self.request.get('username')
         user_psswrd = self.request.get('password')
 
-        print user_uname
-
         valid_pwd = False
         valid_user = False
-
-        #q = mydb.User.get_by_name(user_uname)
+        #Get user and check password.
         q = mydb.single_user_by_name(user_uname)
         if not(q is None):
             valid_user = True
             valid_pwd = utils.valid_pw(user_uname, user_psswrd, q.password_hash)
 
         if valid_pwd and valid_user:
+            # Set cookie and redirect.
             redir = self.request.cookies.get('Location')
             if not redir:
                 redir = '/'
@@ -136,7 +144,7 @@ class LoginPage(Handler):
 
 
 class LogoutPage(Handler):
-
+    """This class handles the Logout page."""
     def get(self):
         redir = self.request.cookies.get('Location')
         self.response.set_cookie('user_id', '')
@@ -144,17 +152,18 @@ class LogoutPage(Handler):
 
 
 class WikiPage(Handler):
-
+    """This class handles the Wiki page (i.e. single entries)."""
     def render_post(self, title):
+        #Get the right entry.
         version = self.request.get("v")
         if version.isdigit():
-            #post = mydb.Posts.get_by_title_version(title, int(version))
             post = mydb.singlepost_version(title, int(version))
         else:
-            #post = mydb.Posts.get_latest_by_title(title)
             post = mydb.singlepost_latest(title)
 
+
         if post:
+            #If there is a post, update the cookie and load the post.
             uname, logged_in = self.signedin()
             self.response.set_cookie('Location', title)
 
@@ -164,8 +173,8 @@ class WikiPage(Handler):
                 self.render("individpost.html", entry=post, logged_in=logged_in)
 
         else:
+            #Else redirect to its edit page.
             logging.error("NO POST, redirect to /_edit%s" % title)
-            #mydb.allposts(True)
             self.redirect("/_edit" + title)
 
     def get(self, title):
@@ -173,15 +182,15 @@ class WikiPage(Handler):
 
 
 class EditPage(Handler):
-
+    """This class handles the Edit page."""
     def render_edit(self, title="", content="", logged_in=False, user=""):
         self.render("edit.html", title=title, content=content, user=user)
 
     def get(self, title):
-        uname, logged_in = self.signedin()
-        #post = mydb.Posts.get_latest_by_title(title)
+        uname, logged_in = self.signedin() #Check if the user's logged in.
         post = mydb.singlepost_latest(title)
         if logged_in:
+            #Set cookie and display the content.
             self.response.set_cookie('Location', '/_edit'+title)
             logging.debug("entry id for editing: " + title)
 
@@ -193,21 +202,21 @@ class EditPage(Handler):
                 self.render_edit(title=title, user=uname.username)
 
         else:
-
+            #Either redirect to login or to the post if it exists.
             if post is None:
                 self.redirect('/login')
             else:
                 self.redirect('..' + title)
 
     def post(self, title):
+        #Check if the user is logged in and get the latest version of the entry.
         uname, logged_in = self.signedin()
-        print title
-        #p = mydb.Posts.get_latest_by_title(title)
         p = mydb.singlepost_latest(title)
 
         if logged_in:
+            #Get the content for the wiki page and modify it if there has already been some content for it.
+            #Else create the instance in the database.
             entry = self.request.get("content")
-            print entry
             logging.error("this is the entry_title: " + title)
             print "p is none: " + str(p is None)
 
@@ -220,28 +229,23 @@ class EditPage(Handler):
                 print "tried to post to edit page and s/he was logged in and there was a post"
                 mydb.Posts.add_new(title,entry)
                 mydb.allposts(update=True, entry=[title, entry])
-            #time.sleep(0.2)
-            #print "updated content: " + str(p.content)
-            #print "edit post entry key after put: " + str(p.key())
-            #mydb.allposts(True, p)
             self.redirect('..'+title)
 
         else:
+            #Either redirect to login or to the post if it exists.
             if p is None:
-                print "tried to post to edit page but wasn't logged in and there was no post"
                 self.redirect('/login')
             else:
-                print "tried to post to edit page but wasn't logged in and there was a post"
                 self.redirect('..'+title)
 
 
 class HistoryPage(Handler):
-
+    """This class handles the History page."""
     def render_history(self, title="", entry="", logged_in=False, user=""):
         self.render("history.html", title=title, entry=entry, user=user)
 
     def create_history(self, title):
-        #ps = mydb.Posts.get_all_versions(title)
+        #Get all the versions of the entries and create a list of mydb.Post from them.
         ps = mydb.singlepost_allversions(title)
         posts = []
         n = len(ps.content)
@@ -253,6 +257,7 @@ class HistoryPage(Handler):
         return posts
 
     def get(self, title):
+        #Check if the user is logged in and create the history of the entry.
         uname, logged_in = self.signedin()
         posts = self.create_history(title)
 
@@ -260,6 +265,7 @@ class HistoryPage(Handler):
             self.render_history(title=title, entry=posts, user=uname.username)
 
         else:
+            #Either redirect to login or to the post if it exists.
             if p is None:
                 self.redirect('/login')
             else:
