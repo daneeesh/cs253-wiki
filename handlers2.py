@@ -87,9 +87,10 @@ class SignupPage(Handler):
             password_hash = utils.make_pw_hash(user_uname, user_psswrd)
             user = mydb.User(username=user_uname, password_hash=password_hash, salt=password_hash.split('|')[1], email=user_email)
             user.put()
+            mydb.allusers(update=True, newuser=user)
             print "added new user %s" % user.username
             #mydb.allusers(True, user)
-            time.sleep(0.2)
+            #time.sleep(0.2)
 
             redir = self.request.cookies.get('Location')
 
@@ -118,7 +119,8 @@ class LoginPage(Handler):
         valid_pwd = False
         valid_user = False
 
-        q = mydb.User.get_by_name(user_uname)
+        #q = mydb.User.get_by_name(user_uname)
+        q = mydb.single_user_by_name(user_uname)
         if not(q is None):
             valid_user = True
             valid_pwd = utils.valid_pw(user_uname, user_psswrd, q.password_hash)
@@ -146,9 +148,11 @@ class WikiPage(Handler):
     def render_post(self, title):
         version = self.request.get("v")
         if version.isdigit():
-            post = mydb.Posts.get_by_title_version(title, int(version))
+            #post = mydb.Posts.get_by_title_version(title, int(version))
+            post = mydb.singlepost_version(title, int(version))
         else:
-            post = mydb.Posts.get_latest_by_title(title)
+            #post = mydb.Posts.get_latest_by_title(title)
+            post = mydb.singlepost_latest(title)
 
         if post:
             uname, logged_in = self.signedin()
@@ -175,7 +179,8 @@ class EditPage(Handler):
 
     def get(self, title):
         uname, logged_in = self.signedin()
-        post = mydb.Posts.get_latest_by_title(title)
+        #post = mydb.Posts.get_latest_by_title(title)
+        post = mydb.singlepost_latest(title)
         if logged_in:
             self.response.set_cookie('Location', '/_edit'+title)
             logging.debug("entry id for editing: " + title)
@@ -197,7 +202,8 @@ class EditPage(Handler):
     def post(self, title):
         uname, logged_in = self.signedin()
         print title
-        p = mydb.Posts.get_latest_by_title(title)
+        #p = mydb.Posts.get_latest_by_title(title)
+        p = mydb.singlepost_latest(title)
 
         if logged_in:
             entry = self.request.get("content")
@@ -209,10 +215,12 @@ class EditPage(Handler):
                 print "tried to post to edit page and s/he was logged in and there wasn't a post"
                 p = mydb.Posts(title=title, content=[entry], last_modified=[datetime.datetime.now()])
                 p.put()
+                mydb.allposts(newpost=p)
             else:
                 print "tried to post to edit page and s/he was logged in and there was a post"
                 mydb.Posts.add_new(title,entry)
-            time.sleep(0.2)
+                mydb.allposts(update=True, entry=[title, entry])
+            #time.sleep(0.2)
             #print "updated content: " + str(p.content)
             #print "edit post entry key after put: " + str(p.key())
             #mydb.allposts(True, p)
@@ -233,7 +241,8 @@ class HistoryPage(Handler):
         self.render("history.html", title=title, entry=entry, user=user)
 
     def create_history(self, title):
-        ps = mydb.Posts.get_all_versions(title)
+        #ps = mydb.Posts.get_all_versions(title)
+        ps = mydb.singlepost_allversions(title)
         posts = []
         n = len(ps.content)
         i = 0

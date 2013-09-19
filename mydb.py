@@ -8,63 +8,70 @@ from google.appengine.api import memcache
 from google.appengine.ext import db, ndb
 
 
-def recentposts(update=False):
-    key = 'recent'
-    age = 'age_recent'
-    recent_posts = memcache.get(key)
-    if recent_posts is None or update:
-        logging.debug("CACHE QUERY RECENTPOSTS")
-        recent_posts = allposts()[:10]
-        memcache.set(key, recent_posts)
-        memcache.set(age, time.time())
-    return recent_posts
-
-
-def allposts(update=False, newpost=None):
+def allposts(update=False, newpost=None, entry=None):
     key = 'all'
-    #key2 = 'recent'
     age = 'age_recent'
     all_posts = memcache.get(key)
-    if update and newpost:
+    if not(update) and newpost and not(all_posts is None):
         all_posts.append(newpost)
         memcache.set(key, all_posts)
+        memcache.set(age, time.time())
+        print "new post added to allposts"
+    elif update and entry and not(all_posts is None):
+        replace_post = [post for post in all_posts if post.title == entry[0]][0]
+        i = all_posts.index(replace_post)
+        post = all_posts.pop(i)
+        cont = post.content
+        cont.append(entry[1])
+        print cont
+        post.content = cont
+        l = post.last_modified
+        l.append(datetime.datetime.now())
+        print l
+        post.last_modified = l
+        all_posts.insert(i,post)
+        memcache.set(key, all_posts)
+        memcache.set(age, time.time())
+        print "a post has been updated in all_posts"
     elif all_posts is None or update:
-        logging.debug("DB QUERY ALLPOSTS")
-        a = db.GqlQuery("SELECT * FROM Post ORDER BY created")
+        logging.debug("NDB QUERY ALLPOSTS")
+        a = Posts.query().order(Posts.created)
         all_posts = list(a)
         memcache.set(key, all_posts)
-        #memcache.set(key2, all_posts[:10])
         memcache.set(age, time.time())
-        print "finished updating all the posts"
+        print "intialized/updated allposts"
     return all_posts
 
 
-def singlepost(id):
+def singlepost_allversions(title):
     all_posts = allposts()
-    entries = [post for post in all_posts if post.title == id]
-    try:
-        a = entries[-1]
+    entry = [post for post in all_posts if post.title == title]
+    if entry:
+        a = entry[0]
         print "title: " + str(a.title)
-        print "key: " + str(a.key())
-    except:
+    else:
         a = None
     return a
 
 
-"""def individpost(id, update=False):
-    key = 'individ'
-    age = 'age_individ'
-    individ_post = memcache.get(key)
-    try:
-        update = not(individ_post.key().id() == id)
-    except:
-        pass
-    if individ_post is None or update:
-        logging.debug("CACHE QUERY INDIVID")
-        individ_post = singlepost(id)
-        memcache.set(key, individ_post)
-        memcache.set(age, time.time())
-    return individ_post"""
+def singlepost_latest(title):
+    all_posts = allposts()
+    entry = [post for post in all_posts if post.title == title]
+    if entry:
+        a = entry[0]
+        return Post(title=title, content=a.content[-1])
+    else:
+        return None
+
+
+def singlepost_version(title, version):
+    all_posts = allposts()
+    entry = [post for post in all_posts if post.title == title]
+    if entry:
+        a = entry[0]
+        if version <= len(a.content):
+            return Post(title=title, content=a.content[version])
+    return None
 
 
 def allusers(update=False, newuser=None):
@@ -73,12 +80,14 @@ def allusers(update=False, newuser=None):
     if newuser and update and not(all_users is None):
         all_users.append(newuser)
         memcache.set(key, all_users)
-        print "allusers in memcache replaced"
+        print "new user added to allusers"
     elif all_users is None or update:
-        logging.error("DB QUERY ALLUSERS")
-        a = db.GqlQuery("SELECT * FROM User ORDER BY created")
+        logging.error("NDB QUERY ALLUSERS")
+        a = User.query().order(User.created)
         all_users = list(a)
         memcache.set(key, all_users)
+        print "allusers in memcache initialized/updated"
+    print all_users
     return all_users
 
 
@@ -90,32 +99,20 @@ def single_user_by_name(name):
     return None
 
 
-"""def single_user_by_id(id):
-    all_users = allusers(True)
-    for user in all_users:
-        if int(user.key().id()) == int(id):
-            return user
-    return None"""
-
-
-def initialize_memcache():
-    allposts(True)
-    allusers(True)
-
-
 def flush_memcache():
     memcache.flush_all()
 
 
-def memcache_get(key):
+"""def memcache_get(key):
     return memcache.get(key)
 
 
 def memcache_set(key, value):
-    memcache.set(key, value)
+    memcache.set(key, value)"""
 
 
 class User(ndb.Model):
+    '''The user entity.'''
     username = ndb.StringProperty(required=True)
     password_hash = ndb.StringProperty(required=True)
     salt = ndb.StringProperty(required=True)
@@ -129,6 +126,7 @@ class User(ndb.Model):
 
 
 class Post(ndb.Model):
+    '''A single wiki entry.'''
     title = ndb.StringProperty(required=True)
     content = ndb.TextProperty(required=True)
     created = ndb.DateTimeProperty(auto_now_add=True)
@@ -139,6 +137,7 @@ class Post(ndb.Model):
         return Post.query(Post.title==title).get()
 
 class Posts(ndb.Model):
+    '''This is a post with a history.'''
     title = ndb.StringProperty(required=True)
     content = ndb.StringProperty(repeated=True)
     created = ndb.DateTimeProperty(auto_now_add=True)
@@ -167,7 +166,7 @@ class Posts(ndb.Model):
     @classmethod
     def add_new(cls, title, content):
         p = Posts.query(Posts.title==title).get()
-        print "p is not none is add_new"
+        print "p is not none in add_new"
         cont = p.content
         cont.append(content)
         print cont
